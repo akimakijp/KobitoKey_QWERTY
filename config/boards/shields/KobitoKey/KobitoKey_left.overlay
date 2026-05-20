@@ -83,12 +83,24 @@
   };
 };
 
+/ {
+    /* 右トラックボール用のレイヤーマッパー定義 */
+    rtb_layer_mapper: rtb_layer_mapper {
+        compatible = "zmk,input-processor-layer-mapper";
+        #input-processor-cells = <2>;
+        /* レイヤー2, 3, 4, 5 がアクティブな時だけ、下のアンカーで指定した処理を実行する */
+        layers = <2 3 4 5>;
+        input-processor = <&zip_xy_to_scroll_mapper>;
+    };
+};
+
 &tb_right_listener {
     status = "okay";
 
     input-processors =
         <&sensor_rotation_right>,
-        <&zip_xy_to_scroll_mapper>; /* 引数なしでシンプルに指定 */
+        /* 先ほど作ったマッパーを登録（引数の 0 0 はZMKの仕様上のダミーです） */
+        <&rtb_layer_mapper 0 0>;
 };
 
 &zip_temp_layer {
