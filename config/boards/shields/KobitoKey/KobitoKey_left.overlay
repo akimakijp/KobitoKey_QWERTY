@@ -39,7 +39,6 @@
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <200>; /* センサー感度 */
 
-
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
@@ -73,7 +72,7 @@
             <&zip_xy_to_scroll_mapper>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
-    };
+};
 
 / {
   /omit-if-no-ref/ zip_temp_layer: zip_temp_layer {
@@ -84,28 +83,26 @@
 };
 
 /* ========================================================================== */
-/* 右トラックボール専用：特定のレイヤーでのみスクロール化を有効にするフィルター */
+/*           右トラックボール：特定のレイヤーでのみスクロール化を適用            */
 /* ========================================================================== */
-/ {
-    rtb_layer_filter: rtb_layer_filter {
-        compatible = "zmk,input-processor-intercept-layer";
-        #input-processor-cells = <2>;
-        
-        /* レイヤー2(KIGO), 3(NUM), 4(BT), 5(NUM2) がアクティブな時だけ処理を横取りする */
-        layers = <2 3 4 5>;
-        
-        /* 横取りした入力を、スクロール化プロセッサ（&zip_xy_to_scroll_mapper）に流し込む */
-        input-processor = <&zip_xy_to_scroll_mapper>;
-    };
-};
 
 &tb_right_listener {
     status = "okay";
 
     input-processors =
         <&sensor_rotation_right>,
-        /* 作成したフィルターを適用（引数の 0 0 は構造上のダミー値です） */
-        <&rtb_layer_filter 0 0>;
+        
+        /* 
+         * レイヤー2, 3, 4, 5 にいる時だけ入力を通過させるフィルターとして流用。
+         * 第2引数は滞留時間ですが、オートマウス機能自体は使わないため最小値の 1 で固定します。
+         */
+        <&zip_temp_layer 2 1>,
+        <&zip_temp_layer 3 1>,
+        <&zip_temp_layer 4 1>,
+        <&zip_temp_layer 5 1>,
+        
+        /* 上記のフィルターを通過した入力のみ、スクロールに変換する */
+        <&zip_xy_to_scroll_mapper>;
 };
 
 &zip_temp_layer {
