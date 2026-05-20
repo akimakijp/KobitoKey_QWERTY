@@ -14,8 +14,7 @@
         #input-processor-cells = <2>;
         type = <INPUT_REL_MISC>;
         codes = <INPUT_REL_X INPUT_REL_Y>;
-        multiplier = <1>; /* scale から変更：分子 */
-        divisor = <1>;    /* scale から変更：分母 */
+        /* エラーの原因となるプロパティ（scale, multiplier 等）をすべて排除 */
     };
 };
 
