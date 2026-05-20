@@ -78,12 +78,12 @@
   /omit-if-no-ref/ zip_temp_layer: zip_temp_layer {
     compatible = "zmk,input-processor-temp-layer";
     #input-processor-cells = <2>;
-    require-prior-idle-ms = <350>; /* キー押下後、何msオートマウスレイヤに入らないようにするか、誤爆防止 */
+    require-prior-idle-ms = <350>;
   };
 };
 
 /* ========================================================================== */
-/*           右トラックボール：特定のレイヤーでのみスクロール化を適用            */
+/*                右トラックボール設定（条件付きスクロール化）                */
 /* ========================================================================== */
 
 &tb_right_listener {
@@ -93,16 +93,17 @@
         <&sensor_rotation_right>,
         
         /* 
-         * レイヤー2, 3, 4, 5 にいる時だけ入力を通過させるフィルターとして流用。
-         * 第2引数は滞留時間ですが、オートマウス機能自体は使わないため最小値の 1 で固定します。
+         * 【解説】
+         * 実は `zip_xy_to_scroll_mapper` を直接トグル（反転）させる条件分岐用の
+         * 定義「zip_scroll_to_xy_mapper」が標準で用意されています。
+         *
+         * 通常時はスクロールとして動作させつつ、
+         * 「レイヤー0」と「レイヤー1」の時だけ、スクロール化を解除して
+         * 通常のXY（カーソル移動）に引き戻す、という設定です。
          */
-        <&zip_temp_layer 2 1>,
-        <&zip_temp_layer 3 1>,
-        <&zip_temp_layer 4 1>,
-        <&zip_temp_layer 5 1>,
-        
-        /* 上記のフィルターを通過した入力のみ、スクロールに変換する */
-        <&zip_xy_to_scroll_mapper>;
+        <&zip_xy_to_scroll_mapper>,
+        <&zip_scroll_to_xy_mapper 0 0>, /* レイヤー0の時は普通のカーソルに戻す */
+        <&zip_scroll_to_xy_mapper 1 0>; /* レイヤー1の時は普通のカーソルに戻す */
 };
 
 &zip_temp_layer {
