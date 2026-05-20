@@ -3,40 +3,7 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
-/* ========================================================================== */
-/* 1. トラックボールを「特定のレイヤー」でスクロール化する基本定義             */
-/* ========================================================================== */
-
-/ {
-    /* 移動量をスクロール（ホイール）のデータ量に変換するプロファイル */
-    scroll_profile: scroll_profile {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
-        type = <INPUT_REL_MISC>;
-        codes = <INPUT_REL_X INPUT_REL_Y>;
-        track-scale-x = <1>;
-        track-scale-y = <1>;
-    };
-
-    /* 
-     * レイヤー2, 3, 4, 5 が有効な間だけ、自動的にトラックボールの入力を
-     * スクロール（INPUT_REL_MISC）へ変換して処理するリスナー定義
-     */
-    trackball_scroll_intercept: trackball_scroll_intercept {
-        compatible = "zmk,input-behavior-listener";
-        device = <&vtrack>; /* お使いのトラックボールのデバイスラベル名 */
-        layers = <2 3 4 5>; /* スクロール化させたいレイヤー番号 */
-        
-        evt-type = <INPUT_REL_VAL>;
-        x-code = <INPUT_REL_X>;
-        y-code = <INPUT_REL_Y>;
-        
-        /* 複数形の bindings に修正し、古いZephyrのパーサーに適合させます */
-        bindings = <&scroll_profile 0 0>;
-    };
-};
-
-/* --- &mt と &lt のホールド判定を最適化 (タイポを修正) --- */
+/* --- &mt と &lt のホールド判定を最適化 --- */
 &mt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
@@ -66,15 +33,15 @@
         };
 
         /* ------------------------------------------------------------------
-           レイヤー1：MOUSE
+           レイヤー1：MOUSE (ここに直接ホイールキーを配置します)
            ------------------------------------------------------------------ */
         MOUSE {
             label = "NUMBER";
             bindings = <
-&kp PAGE_UP    &kp F7  &kp F8  &kp F9  &kp F12  &mkp MB5        &kp PAGE_UP  &mkp MCLK  &kp PAGE_DOWN  &kp HOME
-&kp PAGE_DOWN  &kp F4  &kp F5  &kp F6  &kp F11  &mkp MB4        &mkp LCLK    &kp UP     &mkp RCLK      &kp END
-&trans         &kp F1  &kp F2  &kp F3  &kp F10  &msc SCRL_LEFT  &kp LEFT     &kp DOWN   &kp RIGHT      &msc SCRL_RIGHT
-&trans         &trans  &trans  &trans  &trans   &kp DELETE      &trans       &trans     &trans         &to 0
+&kp PAGE_UP    &kp F7  &kp F8  &kp F9  &kp F12  &mkp MB5        &kp PAGE_UP     &msc SCRL_UP    &kp PAGE_DOWN    &kp HOME
+&kp PAGE_DOWN  &kp F4  &kp F5  &kp F6  &kp F11  &mkp MB4        &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_RIGHT  &kp END
+&trans         &kp F1  &kp F2  &kp F3  &kp F10  &msc SCRL_LEFT  &kp LEFT        &kp DOWN        &kp RIGHT        &msc SCRL_RIGHT
+&trans         &trans  &trans  &trans  &trans   &kp DELETE      &mkp LCLK       &mkp RCLK       &mkp MCLK        &to 0
             >;
         };
 
