@@ -35,47 +35,46 @@
     behaviors {
         /* 
          * 【解説】
-         * 特定のBehaviorを使用せず、標準の &lt (Layer-Tap) をベースに、
-         * 各レイヤー番号(2〜5)へ切り替わる瞬間のホールド時に、
-         * スクロールマッパー（&zip_xy_to_scroll_mapper）を直接バインドします。
+         * 標準の &lt (Layer-Tap) をベースに、ホールド（長押し）している間だけ、
+         * スクロールマッパー（&zip_xy_to_scroll_mapper）を強制的に起動させます。
          */
         lt_scroll2: lt_scroll2 {
             compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>; /* ← これが必須でした！ */
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
             bindings = <&mo>, <&kp>;
-            /* レイヤー2に切り替わっている間だけスクロール化を適用 */
             holding-processors = <&zip_xy_to_scroll_mapper>;
         };
 
         lt_scroll3: lt_scroll3 {
             compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
             bindings = <&mo>, <&kp>;
-            /* レイヤー3に切り替わっている間だけスクロール化を適用 */
             holding-processors = <&zip_xy_to_scroll_mapper>;
         };
         
         lt_scroll4: lt_scroll4 {
             compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
             bindings = <&mo>, <&kp>;
-            /* レイヤー4に切り替わっている間だけスクロール化を適用 */
             holding-processors = <&zip_xy_to_scroll_mapper>;
         };
 
         lt_scroll5: lt_scroll5 {
             compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
             bindings = <&mo>, <&kp>;
-            /* レイヤー5に切り替わっている間だけスクロール化を適用 */
             holding-processors = <&zip_xy_to_scroll_mapper>;
         };
     };
