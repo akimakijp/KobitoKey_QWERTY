@@ -35,15 +35,15 @@
     behaviors {
         /* 
          * 【解説】
-         * ホールド時に指定レイヤー（1番目の引数）へ切り替えつつ、
-         * トラックボールの入力プロセッサをスクロール（&zip_xy_to_scroll_mapper）に切り替えます。
+         * ホールド時に &zip_mo を使って「指定レイヤーへの変更」と
+         * 「スクロールマッパー（&zip_xy_to_scroll_mapper）への切り替え」を同時に行います。
          */
         lt_scroll2: lt_scroll2 {
             compatible = "zmk,behavior-hold-tap";
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo>, <&kp>;
+            bindings = <&zip_mo>, <&kp>;
         };
 
         lt_scroll3: lt_scroll3 {
@@ -51,7 +51,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo>, <&kp>;
+            bindings = <&zip_mo>, <&kp>;
         };
         
         lt_scroll4: lt_scroll4 {
@@ -59,7 +59,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo>, <&kp>;
+            bindings = <&zip_mo>, <&kp>;
         };
 
         lt_scroll5: lt_scroll5 {
@@ -67,7 +67,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo>, <&kp>;
+            bindings = <&zip_mo>, <&kp>;
         };
     };
 };
