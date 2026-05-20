@@ -88,17 +88,7 @@
 
     input-processors =
         <&sensor_rotation_right>,
-        
-        /* 
-         * 引数に「レイヤー番号」を指定することで、
-         * 指定したレイヤーがアクティブな時だけ右トラボがスクロールに変化します。
-         */
-        <&zip_xy_to_scroll_mapper 2>, /* レイヤー2 (KIGO) のときスクロール */
-        <&zip_xy_to_scroll_mapper 3>, /* レイヤー3 (NUM) のときスクロール */
-        <&zip_xy_to_scroll_mapper 4>, /* レイヤー4 (BT) のときスクロール */
-        <&zip_xy_to_scroll_mapper 5>; /* レイヤー5 (NUM2) のときスクロール */
-
-        /* ,<&zip_temp_layer 1 1>; オートマウスレイヤーの指定とトラボ操作及びマウスボタン押下後に滞留する時間 */
+        <&zip_xy_to_scroll_mapper>; /* 引数なしでシンプルに指定 */
 };
 
 &zip_temp_layer {
