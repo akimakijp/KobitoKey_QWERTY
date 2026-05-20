@@ -83,13 +83,18 @@
   };
 };
 
+/* ========================================================================== */
+/* 右トラックボール専用：特定のレイヤーでのみスクロール化を有効にするフィルター */
+/* ========================================================================== */
 / {
-    /* 右トラックボール用のレイヤーマッパー定義 */
-    rtb_layer_mapper: rtb_layer_mapper {
-        compatible = "zmk,input-processor-layer-mapper";
+    rtb_layer_filter: rtb_layer_filter {
+        compatible = "zmk,input-processor-intercept-layer";
         #input-processor-cells = <2>;
-        /* レイヤー2, 3, 4, 5 がアクティブな時だけ、下のアンカーで指定した処理を実行する */
+        
+        /* レイヤー2(KIGO), 3(NUM), 4(BT), 5(NUM2) がアクティブな時だけ処理を横取りする */
         layers = <2 3 4 5>;
+        
+        /* 横取りした入力を、スクロール化プロセッサ（&zip_xy_to_scroll_mapper）に流し込む */
         input-processor = <&zip_xy_to_scroll_mapper>;
     };
 };
@@ -99,30 +104,15 @@
 
     input-processors =
         <&sensor_rotation_right>,
-        <&zip_xy_to_scroll_mapper>; /* 引数を一切つけない */
+        /* 作成したフィルターを適用（引数の 0 0 は構造上のダミー値です） */
+        <&rtb_layer_filter 0 0>;
 };
 
 &zip_temp_layer {
     excluded-positions = <
-        6
-        7
-        8
-        9
-        10
-        16
-        17
-        18
-        19
-        20
-        26
-        27
-        28
-        29
-        30
-        36
-        37
-        38
-        39
-        40
+        6 7 8 9 10
+        16 17 18 19 20
+        26 27 28 29 30
+        36 37 38 39 40
     >;
 };
