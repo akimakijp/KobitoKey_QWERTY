@@ -84,7 +84,7 @@
 };
 
 &tb_right_listener {
-    status = "okay";
+    status = "no";
 
     input-processors =
         <&sensor_rotation_right>,
