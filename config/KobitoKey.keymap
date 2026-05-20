@@ -51,7 +51,7 @@
 &kp PAGE_UP    &kp F7  &kp F8  &kp F9  &kp F12  &mkp MB5        &kp PAGE_UP  &mkp MCLK  &kp PAGE_DOWN  &kp HOME
 &kp PAGE_DOWN  &kp F4  &kp F5  &kp F6  &kp F11  &mkp MB4        &mkp LCLK    &kp UP     &mkp RCLK      &kp END
 &trans         &kp F1  &kp F2  &kp F3  &kp F10  &msc SCRL_LEFT  &kp LEFT     &kp DOWN   &kp RIGHT      &msc SCRL_RIGHT
-&trans         &trans  &trans  &trans  &trans   &kp BACKSPACE   &trans       &trans     &trans         &to 0
+&trans         &trans  &trans  &trans  &trans   &kp DELETE      &trans       &trans     &trans         &to 0
             >;
         };
 
