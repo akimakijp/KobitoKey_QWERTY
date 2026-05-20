@@ -4,20 +4,41 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* 1. トラックボールの挙動をコントロールする定義                             */
+/* 1. トラックボールを「特定のレイヤー」でスクロール化する基本定義             */
 /* ========================================================================== */
 
 / {
-    /* 移動量をスクロール（ホイール）に変換するプロファイル */
+    /* 1. 移動量をスクロール（ホイール）のデータ量に変換するプロファイル */
     scroll_profile: scroll_profile {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
         type = <INPUT_REL_MISC>;
         codes = <INPUT_REL_X INPUT_REL_Y>;
+        /* 必要に応じてスクロールの速度（倍率）をここで調整できます */
+        track-scale-x = <1>;
+        track-scale-y = <1>;
+    };
+
+    /* 
+     * 2. レイヤーの状態を監視し、レイヤー2, 3, 4, 5 が有効な間だけ
+     *    トラックボールの入力をスクロールに変換する「インターセプター」を設定
+     */
+    trackball_scroll_intercept: trackball_scroll_intercept {
+        compatible = "zmk,input-behavior-listener";
+        device = <&vtrack>; /* お使いのトラックボールのデバイスラベル名 */
+        layers = <2 3 4 5>; /* ← スクロール化させたいレイヤー番号を並べます */
+        
+        /* 条件（指定レイヤー）に合致した時の処理（スクロール化） */
+        evt-type = <INPUT_REL_VAL>;
+        x-code = <INPUT_REL_X>;
+        y-code = <INPUT_REL_Y>;
+        scale-multiplier = <1>;
+        scale-divisor = <1>;
+        binding = <&zip_xy_to_scroll_mapper>;
     };
 };
 
-/* --- &mt と &lt のホールド判定を即時有効化する設定 --- */
+/* --- &mt と &lt のホールド判定を最適化 --- */
 &mt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
@@ -26,97 +47,6 @@
 &lt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
-};
-
-/* ========================================================================== */
-/*  レイヤー切り替えと同時に右トラックボールをスクロール化するカスタムマクロ   */
-/* ========================================================================== */
-/ {
-    macros {
-        /* レイヤー2起動 ＋ スクロールON */
-        mo_scroll2: mo_scroll2 {
-            compatible = "zmk,behavior-macro-one-param";
-            #binding-cells = <1>;
-            bindings
-                = <&macro_press &mo 2 &zip_tog 1>  /* スクロールマッパー(通常はID 1)を有効化 */
-                , <&macro_param_1to1>
-                , <&macro_await_release>
-                , <&macro_release &mo 2 &zip_tog 1>;
-        };
-
-        /* レイヤー3起動 ＋ スクロールON */
-        mo_scroll3: mo_scroll3 {
-            compatible = "zmk,behavior-macro-one-param";
-            #binding-cells = <1>;
-            bindings
-                = <&macro_press &mo 3 &zip_tog 1>
-                , <&macro_param_1to1>
-                , <&macro_await_release>
-                , <&macro_release &mo 3 &zip_tog 1>;
-        };
-
-        /* レイヤー4起動 ＋ スクロールON */
-        mo_scroll4: mo_scroll4 {
-            compatible = "zmk,behavior-hold-tap";
-            compatible = "zmk,behavior-macro-one-param";
-            #binding-cells = <1>;
-            bindings
-                = <&macro_press &mo 4 &zip_tog 1>
-                , <&macro_param_1to1>
-                , <&macro_await_release>
-                , <&macro_release &mo 4 &zip_tog 1>;
-        };
-
-        /* レイヤー5起動 ＋ スクロールON */
-        mo_scroll5: mo_scroll5 {
-            compatible = "zmk,behavior-macro-one-param";
-            #binding-cells = <1>;
-            bindings
-                = <&macro_press &mo 5 &zip_tog 1>
-                , <&macro_param_1to1>
-                , <&macro_await_release>
-                , <&macro_release &mo 5 &zip_tog 1>;
-        };
-    };
-
-    behaviors {
-        /* 作成したマクロ（ホールド時に動作）と、通常タップ時のキー出力をHold-Tapに統合 */
-        lt_scroll2: lt_scroll2 {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            #behavior-cells = <2>;
-            flavor = "hold-preferred";
-            tapping-term-ms = <170>;
-            bindings = <&mo_scroll2>, <&kp>;
-        };
-
-        lt_scroll3: lt_scroll3 {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            #behavior-cells = <2>;
-            flavor = "hold-preferred";
-            tapping-term-ms = <170>;
-            bindings = <&mo_scroll3>, <&kp>;
-        };
-        
-        lt_scroll4: lt_scroll4 {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            #behavior-cells = <2>;
-            flavor = "hold-preferred";
-            tapping-term-ms = <170>;
-            bindings = <&mo_scroll4>, <&kp>;
-        };
-
-        lt_scroll5: lt_scroll5 {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            #behavior-cells = <2>;
-            flavor = "hold-preferred";
-            tapping-term-ms = <170>;
-            bindings = <&mo_scroll5>, <&kp>;
-        };
-    };
 };
 
 / {
@@ -130,10 +60,10 @@
            ------------------------------------------------------------------ */
         default_layer {
             bindings = <
-&lt 1 Q  &lt_scroll5 5 W     &kp E        &kp R        &kp T        &kp Y        &kp U             &kp I              &kp O        &lt_scroll4 4 P
+&lt 1 Q  &lt 5 W            &kp E        &kp R        &kp T        &kp Y        &kp U             &kp I              &kp O        &lt 4 P
 &kp A    &mt LEFT_SHIFT S  &mt LCTRL D  &mt LEFT_ALT F  &kp G        &kp H        &mt RIGHT_ALT J  &mt RCTRL K        &mt RSHFT L  &kp MINUS
 &kp Z    &kp X              &kp C        &kp V           &kp B        &kp N        &kp M            &kp COMMA          &kp DOT      &kp SLASH
-&kp ESC  &kp CAPSLOCK      &kp LCMD     &lt_scroll2 2 TAB &lt_scroll3 3 SPACE &kp BSPC &lt_scroll2 2 ENTER &kp LS(CAPSLOCK)  &kp RWIN     &to 2
+&kp ESC  &kp CAPSLOCK      &kp LCMD     &lt 2 TAB    &lt 3 SPACE   &kp BSPC     &lt 2 ENTER  &kp LS(CAPSLOCK)  &kp RWIN     &to 2
             >;
         };
 
