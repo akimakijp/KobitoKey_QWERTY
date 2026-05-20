@@ -2,8 +2,6 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
-/* 入力プロセッサの定数を読み込むためのヘッダーを追記 */
-#include <dt-bindings/zmk/input_processor.h> 
 
 /* ========================================================================== */
 /* 1. トラックボールの挙動をコントロールする定義                             */
@@ -37,15 +35,15 @@
     behaviors {
         /* 
          * 【解説】
-         * &lt (Layer Tap) を拡張し、ホールド時にレイヤーを切り替えるだけでなく、
-         * 同時に右トラボのプロセッサを「&zip_xy_to_scroll_mapper」に切り替えます。
+         * ホールド時に指定レイヤー（1番目の引数）へ切り替えつつ、
+         * トラックボールの入力プロセッサをスクロール（&zip_xy_to_scroll_mapper）に切り替えます。
          */
         lt_scroll2: lt_scroll2 {
             compatible = "zmk,behavior-hold-tap";
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo 2 IPrst_mo &zip_xy_to_scroll_mapper>, <&kp>;
+            bindings = <&ip_mo>, <&kp>;
         };
 
         lt_scroll3: lt_scroll3 {
@@ -53,7 +51,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo 3 IPrst_mo &zip_xy_to_scroll_mapper>, <&kp>;
+            bindings = <&ip_mo>, <&kp>;
         };
         
         lt_scroll4: lt_scroll4 {
@@ -61,7 +59,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo 4 IPrst_mo &zip_xy_to_scroll_mapper>, <&kp>;
+            bindings = <&ip_mo>, <&kp>;
         };
 
         lt_scroll5: lt_scroll5 {
@@ -69,7 +67,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&ip_mo 5 IPrst_mo &zip_xy_to_scroll_mapper>, <&kp>;
+            bindings = <&ip_mo>, <&kp>;
         };
     };
 };
@@ -85,10 +83,10 @@
            ------------------------------------------------------------------ */
         default_layer {
             bindings = <
-&lt 1 Q  `lt_scroll5` W     &kp E        &kp R        &kp T        &kp Y        &kp U             &kp I              &kp O        `lt_scroll4` P
+&lt 1 Q  &lt_scroll5 5 W     &kp E        &kp R        &kp T        &kp Y        &kp U             &kp I              &kp O        &lt_scroll4 4 P
 &kp A    &mt LEFT_SHIFT S  &mt LCTRL D  &mt LEFT_ALT F  &kp G        &kp H        &mt RIGHT_ALT J  &mt RCTRL K        &mt RSHFT L  &kp MINUS
 &kp Z    &kp X              &kp C        &kp V           &kp B        &kp N        &kp M            &kp COMMA          &kp DOT      &kp SLASH
-&kp ESC  &kp CAPSLOCK      &kp LCMD     `lt_scroll2` TAB `lt_scroll3` SPACE &kp BSPC `lt_scroll2` ENTER &kp LS(CAPSLOCK)  &kp RWIN     &to 2
+&kp ESC  &kp CAPSLOCK      &kp LCMD     &lt_scroll2 2 TAB &lt_scroll3 3 SPACE &kp BSPC &lt_scroll2 2 ENTER &kp LS(CAPSLOCK)  &kp RWIN     &to 2
             >;
         };
 
