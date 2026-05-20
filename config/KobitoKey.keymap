@@ -4,23 +4,17 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/*  トラックボール・レイヤー連動スクロール化（デバイス名完全不問版）         */
+/*  トラックボール・レイヤー連動スクロール化（tb_right_split 直接上書き版）   */
 /* ========================================================================== */
 
-/ {
-    behaviors {
-        /*
-         * レイヤー1（MOUSEレイヤー）に切り替わっている間だけ、
-         * トラックボールの通常のXY移動を自動的にスクロール（ホイール）移動に
-         * 変換するビヘイビアリスナーを設定します。
-         * これにより、特定のセンサー名（&vtrack等）を指定する必要がなくなります。
-         */
-        tog_layer_scroll: tog_layer_scroll {
-            compatible = "zmk,input-behavior-listener";
-            bindings = <&zip_xy_to_scroll_mapper>;
-            layers = <1 2 3 4 5>; /* スクロール化させたいレイヤー番号 */
-        };
-    };
+/* 
+ * 大元のdtsiで定義されている `tb_right_listener` を上書きします。
+ * statusを有効化し、特定のレイヤーのときだけ移動量をスクロールに変換します。
+ */
+&tb_right_listener {
+    status = "okay";
+    layers = <1 2 3 4 5>; /* スクロール化したいレイヤー番号（MOUSEレイヤーは1） */
+    input-processors = <&zip_xy_to_scroll_mapper>;
 };
 
 /* --- &mt と &lt のホールド判定を最適化 --- */
