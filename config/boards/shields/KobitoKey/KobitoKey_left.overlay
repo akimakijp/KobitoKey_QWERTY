@@ -99,8 +99,7 @@
 
     input-processors =
         <&sensor_rotation_right>,
-        /* 先ほど作ったマッパーを登録（引数の 0 0 はZMKの仕様上のダミーです） */
-        <&rtb_layer_mapper 0 0>;
+        <&zip_xy_to_scroll_mapper>; /* 引数を一切つけない */
 };
 
 &zip_temp_layer {
