@@ -5,6 +5,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* &mt と &lt の同時押し判定を即時有効化する設定 */
+
 &mt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
@@ -16,8 +17,10 @@
 };
 
 /* トラックボールの設定（レイヤー0、1 以外でスクロールにし、オートマウスを解除） */
+
 / {
     // トラックボールの移動量をスクロールに変換する定義
+
     scroll_profile: scroll_profile {
         compatible = "zmk,input-processor-profiler";
         #input-processor-cells = <0>;
@@ -36,7 +39,7 @@
         /* それ以外のレイヤー（2, 3, 4, 5）の時は、自動的にスクロール動作を適用 */
         &scroll_profile
     >;
-    
+
     /* ⚠️ もしここに「automouse」や「&zip_automouse_layer」といった記述（プロパティ）が
        残っていた場合は、それを完全に削除することでオートマウスが解除されます。
        このブロック内を上記のように input-processors だけのシンプルな状態に上書きしてください。 */
@@ -89,17 +92,17 @@
 &kp PAGE_UP    &kp F7  &kp F8  &kp F9  &kp F12  &mkp MB5        &kp PAGE_UP  &mkp MCLK  &kp PAGE_DOWN  &kp HOME
 &kp PAGE_DOWN  &kp F4  &kp F5  &kp F6  &kp F11  &mkp MB4        &mkp LCLK    &kp UP     &mkp RCLK      &kp END
 &trans         &kp F1  &kp F2  &kp F3  &kp F10  &msc SCRL_LEFT  &kp LEFT     &kp DOWN   &kp RIGHT      &msc SCRL_RIGHT
-&trans         &trans  &trans  &trans  &trans   &kp BACKSPACE   &trans       &trans     &trans         &to 0
+&trans         &trans  &trans  &trans  &trans   &kp DELETE      &trans       &trans     &trans         &to 0
             >;
         };
 
         layer2 {
             label = "FUNCTION";
             bindings = <
-&kp EXCLAMATION  &kp AT_SIGN     &kp HASH   &kp DOLLAR  &kp PERCENT        &kp CARET      &kp AMPERSAND   &kp ASTERISK     &kp LEFT_PARENTHESIS    &kp RIGHT_PARENTHESIS
-&none            &none           &none      &none       &kp LS(SEMICOLON)  &kp SEMICOLON  &mt RALT EQUAL  &mt RCTRL SLASH  &mt RSHFT LEFT_BRACKET  &kp RIGHT_BRACKET
-&none            &none           &none      &none       &kp LS(SQT)        &kp SQT        &kp PLUS        &kp QUESTION     &kp PIPE                &kp NON_US_BACKSLASH
-&trans           &trans          &trans     &trans      &trans             &kp LS(CAPS)   &trans          &trans           &trans                  &kp ESCAPE
+&kp EXCLAMATION  &kp AT_SIGN  &kp HASH  &kp DOLLAR  &kp PERCENT        &kp CARET      &kp AMPERSAND   &kp ASTERISK     &kp LEFT_PARENTHESIS    &kp RIGHT_PARENTHESIS
+&none            &none        &none     &none       &kp LS(SEMICOLON)  &kp SEMICOLON  &mt RALT EQUAL  &mt RCTRL SLASH  &mt RSHFT LEFT_BRACKET  &kp RIGHT_BRACKET
+&none            &none        &none     &none       &kp LS(SQT)        &kp SQT        &kp PLUS        &kp QUESTION     &kp PIPE                &kp NON_US_BACKSLASH
+&trans           &trans       &trans    &trans      &trans             &kp LS(CAPS)   &trans          &trans           &trans                  &kp ESCAPE
             >;
         };
 
