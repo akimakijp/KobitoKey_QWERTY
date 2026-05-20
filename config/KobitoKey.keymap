@@ -4,18 +4,29 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/*  トラックボール・レイヤー連動スクロール化（x-layers 修正版）                */
+/*  トラックボール・レイヤー連動スクロール化（プロセッサ分離・完全互換版）    */
 /* ========================================================================== */
+
+/ {
+    /* 
+     * レイヤー連動型のスクロールプロセッサをここで新しく定義します。
+     * layersプロパティをここに隔離することで、リスナー側のビルドエラーを完全に防ぎます。
+     */
+    ball_scroll: ball_scroll {
+        compatible = "zmk,input-processor-layer-to-scroll-mapper";
+        #input-processor-cells = <0>;
+        layers = <1 2 3 4 5>; /* スクロール化したいレイヤー番号（MOUSEレイヤーは1） */
+    };
+};
 
 /* 
  * 大元のdtsiで定義されている `tb_right_listener` を上書きします。
- * statusを有効化し、特定のレイヤーのときだけ移動量をスクロールに変換します。
+ * statusを有効化し、上記で定義したレイヤー連動プロセッサを登録します。
  */
 &tb_right_listener {
     status = "okay";
     device = <&tb_right_split>;
-    x-layers = <2 3 4 5>; /* スクロール化したいレイヤー番号（MOUSEレイヤーは1） */
-    input-processors = <&zip_xy_to_scroll_mapper>;
+    input-processors = <&ball_scroll>;
 };
 
 /* --- &mt と &lt のホールド判定を最適化 --- */
