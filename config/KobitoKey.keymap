@@ -4,17 +4,30 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/*  トラックボール・レイヤー連動スクロール化（ZMK標準仕様・完全ビルド対応版）  */
+/*  トラックボール・レイヤー連動スクロール化（標準機能・安全割込版）          */
 /* ========================================================================== */
 
-/* 
- * 大元のdtsiで定義されている `tb_right_listener` を上書きします。
- * 複雑なカスタムプロセッサは作らず、標準のスクロールマッパーを登録します。
- */
-&tb_right_listener {
-    status = "okay";
-    device = <&tb_right_split>;
-    input-processors = <&zip_xy_to_scroll_mapper>;
+/ {
+    /*
+     * 大元のdtsiで眠っている右トラックボールのリスナー（tb_right_listener）を
+     * 起こして、通常のポインタ（カーソル）として動くように設定します。
+     */
+    &tb_right_listener {
+        status = "okay";
+        device = <&tb_right_split>;
+    };
+
+    /*
+     * ここがポイントです！
+     * トラックボールの通信（&tb_right_split）を監視し、
+     * 「指定したレイヤー」のときだけ、入力をスクロールに変換する割り込み処理を作ります。
+     */
+    scroll_layer_modifier: scroll_layer_modifier {
+        compatible = "zmk,input-behavior-listener";
+        device = <&tb_right_split>;
+        bindings = <&zip_xy_to_scroll_mapper>;
+        layers = <1 2 3 4 5>; /* スクロール化したいレイヤー（MOUSEレイヤーは1） */
+    };
 };
 
 /* --- &mt と &lt のホールド判定を最適化 --- */
