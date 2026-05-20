@@ -11,10 +11,11 @@
     /* 移動量をスクロール（ホイール）に変換するプロファイル */
     scroll_profile: scroll_profile {
         compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>; /* 最新ZMK仕様：2に修正 */
+        #input-processor-cells = <2>;
         type = <INPUT_REL_MISC>;
         codes = <INPUT_REL_X INPUT_REL_Y>;
-        scale = <1>;
+        multiplier = <1>; /* scale から変更：分子 */
+        divisor = <1>;    /* scale から変更：分母 */
     };
 };
 
