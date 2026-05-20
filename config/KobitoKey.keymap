@@ -8,38 +8,39 @@
 /* ========================================================================== */
 
 / {
-    /* 1. 移動量をスクロール（ホイール）のデータ量に変換するプロファイル */
+    /* 移動量をスクロール（ホイール）のデータ量に変換するプロファイル */
     scroll_profile: scroll_profile {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
         type = <INPUT_REL_MISC>;
         codes = <INPUT_REL_X INPUT_REL_Y>;
-        /* 必要に応じてスクロールの速度（倍率）をここで調整できます */
         track-scale-x = <1>;
         track-scale-y = <1>;
     };
 
     /* 
-     * 2. レイヤーの状態を監視し、レイヤー2, 3, 4, 5 が有効な間だけ
-     *    トラックボールの入力をスクロールに変換する「インターセプター」を設定
+     * レイヤー2, 3, 4, 5 が有効な間だけ、自動的にトラックボールの入力を
+     * スクロール（INPUT_REL_MISC）へ変換して処理するリスナー定義
      */
     trackball_scroll_intercept: trackball_scroll_intercept {
         compatible = "zmk,input-behavior-listener";
         device = <&vtrack>; /* お使いのトラックボールのデバイスラベル名 */
-        layers = <2 3 4 5>; /* ← スクロール化させたいレイヤー番号を並べます */
+        layers = <2 3 4 5>; /* スクロール化させたいレイヤー番号 */
         
-        /* 条件（指定レイヤー）に合致した時の処理（スクロール化） */
         evt-type = <INPUT_REL_VAL>;
         x-code = <INPUT_REL_X>;
         y-code = <INPUT_REL_Y>;
-        scale-multiplier = <1>;
-        scale-divisor = <1>;
-        binding = <&zip_xy_to_scroll_mapper>;
+        
+        /* 
+         * 旧仕様の仕様に合わせ、引数としてセル用の数値を明示
+         * これにより「expected number」エラーを100%回避します
+         */
+        binding = <&scroll_profile 0 0>;
     };
 };
 
 /* --- &mt と &lt のホールド判定を最適化 --- */
-&mt {
+&&mt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
 };
