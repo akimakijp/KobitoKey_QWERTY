@@ -3,6 +3,8 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
+/* 1. 最新のZMKルールで「スクロール化」の型を定義 */
+#include <dt-bindings/zmk/input_transform.h>
 
 /* ここから変更：&mt と &lt の同時押し判定を即時有効化する設定 */
 &mt {
@@ -18,20 +20,25 @@
 
 /* ここから追加：トラックボールの動きをスクロールに変換する設定 */
 / {
-    // トラックボールのX/Y軸の移動量を、マウスホイールの上下左右（スクロール）に変換する定義
+    /* トラックボールの動きをスクロールに変換する定義（最新の互換レイヤー） */
     scroll_profile: scroll_profile {
-        compatible = "zmk,input-processor-profiler";
+        compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <0>;
-        
-        // XYの移動をホイール（XY軸両方）にマッピング
-        processors = <&zip_xy_to_scroll_axes>;
+        type = <INPUT_REL_MISC>; /* マウス移動ではなく、ホイール/スクロール系として処理 */
+        scale = <1>;             /* スクロールの速度（重ければ 2 や 3 に変更可能） */
     };
 };
 
-// 小人キーボードのトラックボール（通常は pinctrl や spi 等で定義されたデバイス）に対して、
-// レイヤー1（NUMBER）が有効な時だけ上記のスクロール変換を適用する
-&trackball {
-    input-processors = <&zip_report_to_profile_with_layer 1 &scroll_profile>;
+/* 2. 小人キーボードのトラックボール（PMW3610等）の挙動を上書き */
+&pbc1115 {
+    input-processors = <
+        /* レイヤー0（デフォルト）とレイヤー1の時は、スクロール設定を除外して通常のマウスカーソル移動にする */
+        &zip_report_to_profile_with_layer 0 &scroll_profile
+        &zip_report_to_profile_with_layer 1 &scroll_profile
+        
+        /* それ以外のレイヤー（2, 3, 4, 5）の時は、自動的にスクロール動作（画面スクロール）を適用 */
+        &scroll_profile
+    >;
 };
 /* ここまで追加 */
 
