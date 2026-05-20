@@ -32,20 +32,62 @@
 /*  レイヤー切り替えと同時に右トラックボールをスクロール化するカスタムマクロ   */
 /* ========================================================================== */
 / {
+    macros {
+        /* レイヤー2起動 ＋ スクロールON */
+        mo_scroll2: mo_scroll2 {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings
+                = <&macro_press &mo 2 &zip_tog 1>  /* スクロールマッパー(通常はID 1)を有効化 */
+                , <&macro_param_1to1>
+                , <&macro_await_release>
+                , <&macro_release &mo 2 &zip_tog 1>;
+        };
+
+        /* レイヤー3起動 ＋ スクロールON */
+        mo_scroll3: mo_scroll3 {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings
+                = <&macro_press &mo 3 &zip_tog 1>
+                , <&macro_param_1to1>
+                , <&macro_await_release>
+                , <&macro_release &mo 3 &zip_tog 1>;
+        };
+
+        /* レイヤー4起動 ＋ スクロールON */
+        mo_scroll4: mo_scroll4 {
+            compatible = "zmk,behavior-hold-tap";
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings
+                = <&macro_press &mo 4 &zip_tog 1>
+                , <&macro_param_1to1>
+                , <&macro_await_release>
+                , <&macro_release &mo 4 &zip_tog 1>;
+        };
+
+        /* レイヤー5起動 ＋ スクロールON */
+        mo_scroll5: mo_scroll5 {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings
+                = <&macro_press &mo 5 &zip_tog 1>
+                , <&macro_param_1to1>
+                , <&macro_await_release>
+                , <&macro_release &mo 5 &zip_tog 1>;
+        };
+    };
+
     behaviors {
-        /* 
-         * 【解説】
-         * 標準の &lt (Layer-Tap) をベースに、ホールド（長押し）している間だけ、
-         * スクロールマッパー（&zip_xy_to_scroll_mapper）を強制的に起動させます。
-         */
+        /* 作成したマクロ（ホールド時に動作）と、通常タップ時のキー出力をHold-Tapに統合 */
         lt_scroll2: lt_scroll2 {
             compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>; /* ← これが必須でした！ */
+            #binding-cells = <2>;
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&mo>, <&kp>;
-            holding-processors = <&zip_xy_to_scroll_mapper>;
+            bindings = <&mo_scroll2>, <&kp>;
         };
 
         lt_scroll3: lt_scroll3 {
@@ -54,8 +96,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&mo>, <&kp>;
-            holding-processors = <&zip_xy_to_scroll_mapper>;
+            bindings = <&mo_scroll3>, <&kp>;
         };
         
         lt_scroll4: lt_scroll4 {
@@ -64,8 +105,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&mo>, <&kp>;
-            holding-processors = <&zip_xy_to_scroll_mapper>;
+            bindings = <&mo_scroll4>, <&kp>;
         };
 
         lt_scroll5: lt_scroll5 {
@@ -74,8 +114,7 @@
             #behavior-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <170>;
-            bindings = <&mo>, <&kp>;
-            holding-processors = <&zip_xy_to_scroll_mapper>;
+            bindings = <&mo_scroll5>, <&kp>;
         };
     };
 };
