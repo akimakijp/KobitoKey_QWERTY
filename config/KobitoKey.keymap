@@ -4,7 +4,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* 1. トラックボールの挙動をコントロールする定義（最新のZMK仕様）             */
+/* 1. トラックボールの挙動をコントロールする定義                             */
 /* ========================================================================== */
 
 / {
@@ -12,20 +12,20 @@
     scroll_profile: scroll_profile {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <0>;
-        type = <INPUT_REL_MISC>; /* マウス移動ではなく、スクロールとして処理 */
-        codes = <INPUT_REL_X INPUT_REL_Y>; /* 最新ZMKで必須：X軸・Y軸の両方に適用 */
-        scale = <1>;             /* スクロール速度（重ければ 2 や 3 に変更可能） */
+        type = <INPUT_REL_MISC>;
+        codes = <INPUT_REL_X INPUT_REL_Y>;
+        scale = <1>;
     };
 };
 
-/* --- &mt と &lt の同時押し判定を即時有効化する設定 --- */
+/* --- &mt と &lt のホールド判定を即時有効化する設定 --- */
 &mt {
-    flavor = "hold-preferred";  // 重ね押しされたら即座にモディファイア（Shift等）にする
+    flavor = "hold-preferred";
     tapping-term-ms = <170>;
 };
 
 &lt {
-    flavor = "hold-preferred";  // 重ね押しされたらディレイなしで即座にレイヤーを切り替える
+    flavor = "hold-preferred";
     tapping-term-ms = <170>;
 };
 
@@ -48,7 +48,7 @@
         };
 
         /* ------------------------------------------------------------------
-           レイヤー1：MOUSE （Qキー長押しで突入。ここだけ右手ボールがスクロール化）
+           レイヤー1：MOUSE
            ------------------------------------------------------------------ */
         MOUSE {
             label = "NUMBER";
@@ -111,4 +111,3 @@
         };
     };
 };
-```</INPUT_REL_X></Node>
