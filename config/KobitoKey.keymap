@@ -17,36 +17,35 @@
     };
 };
 
-/* --- 左手側トラックボールの設定 --- */
+/* 
+   【エラー原因のため一時無効化】
+   お使いのKobitoKeyのベース定義側で、トラックボールの正しいラベル名を確認する必要があります。
+   ビルドを通すため、一旦この設定を保留します。
+
 &pbc1115 {
-    /* 常にスクロール化プロファイルを適用（常時スクロールモード） */
     input-processors = <&scroll_profile>;
 };
 
-/* --- 右手側トラックボールの設定 --- */
 &pbc1115_r {
-    /* レイヤー1（MOUSE）にいる時「以外」は、スクロールプロファイルを除外（無効化）する */
-    /* つまり、普段（レイヤー0, 2, 3, 4, 5）は通常のマウスカーソル移動になります */
     input-processors = <
         &zip_report_to_profile_with_layer 0 &scroll_profile
         &zip_report_to_profile_with_layer 2 &scroll_profile
         &zip_report_to_profile_with_layer 3 &scroll_profile
         &zip_report_to_profile_with_layer 4 &scroll_profile
         &zip_report_to_profile_with_layer 5 &scroll_profile
-        
-        /* レイヤー1（MOUSE）の時だけ、除外されずにこのスクロール動作が適用されます */
         &scroll_profile
     >;
 };
+*/
 
 /* &mt と &lt の同時押し判定を即時有効化する設定 */
 
-&&mt {
+&mt {
     flavor = "hold-preferred";  // 重ね押しされたら即座にモディファイア（Shift等）にする
     tapping-term-ms = <170>;
 };
 
-&&lt {
+&lt {
     flavor = "hold-preferred";  // 重ね押しされたらディレイなしで即座にレイヤーを切り替える
     tapping-term-ms = <170>;
 };
@@ -70,7 +69,7 @@
         };
 
         /* ------------------------------------------------------------------
-           レイヤー1：MOUSE （Qキー長押しで突入。ここだけ右手ボールがスクロール化）
+           レイヤー1：MOUSE 
            ------------------------------------------------------------------ */
         MOUSE {
             label = "NUMBER";
