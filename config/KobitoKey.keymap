@@ -11,7 +11,7 @@
     /* 移動量をスクロール（ホイール）に変換するプロファイル */
     scroll_profile: scroll_profile {
         compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <0>;
+        #input-processor-cells = <2>; /* 最新ZMK仕様：2に修正 */
         type = <INPUT_REL_MISC>;
         codes = <INPUT_REL_X INPUT_REL_Y>;
         scale = <1>;
