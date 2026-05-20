@@ -16,6 +16,25 @@
 };
 /* ここまで変更 */
 
+/* ここから追加：トラックボールの動きをスクロールに変換する設定 */
+/ {
+    // トラックボールのX/Y軸の移動量を、マウスホイールの上下左右（スクロール）に変換する定義
+    scroll_profile: scroll_profile {
+        compatible = "zmk,input-processor-profiler";
+        #input-processor-cells = <0>;
+        
+        // XYの移動をホイール（XY軸両方）にマッピング
+        processors = <&zip_xy_to_scroll_axes>;
+    };
+};
+
+// 小人キーボードのトラックボール（通常は pinctrl や spi 等で定義されたデバイス）に対して、
+// レイヤー1（NUMBER）が有効な時だけ上記のスクロール変換を適用する
+&trackball {
+    input-processors = <&zip_report_to_profile_with_layer 1 &scroll_profile>;
+};
+/* ここまで追加 */
+
 / {
     combos {
         compatible = "zmk,combos";
