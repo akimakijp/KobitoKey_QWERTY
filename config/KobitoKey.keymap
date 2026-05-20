@@ -4,18 +4,27 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/*  トラックボール・レイヤー連動スクロール化の完全版                         */
+/*  トラックボール・レイヤー連動スクロール化（ノード強制探索版）            */
 /* ========================================================================== */
+
+/* 
+ * 既存の定義の中から pmw3610 センサーのノードを直接見つけ出し、
+ * 独自のラベル「pmw3610_scroll」を無理やり割り当てます。
+ */
+&{/soc/spi@40003000/pmw3610@0} {
+    status = "okay";
+    pmw3610_scroll: pmw3610_scroll { };
+};
 
 / {
     /* 
      * 特定のレイヤーがONのとき、トラックボールの移動量をスクロールに変換するリスナー
-     * デバイスに正式な名称である `&trackball` を指定します。
+     * 上で強制定義した `&pmw3610_scroll` をターゲットに指定します。
      */
     trackball_scroll_intercept: trackball_scroll_intercept {
         compatible = "zmk,input-listener";
-        device = <&trackball>; /* 正式なセンサーのデバイス名 */
-        layers = <2 3 4 5>;   /* ボール転がしスクロールを有効にするレイヤー */
+        device = <&pmw3610_scroll>;
+        layers = <1 2 3 4 5>; /* ボール転がしスクロールを有効にするレイヤー */
         
         /* ZMK Pointing標準のスクロール変換プロセッサを適用 */
         input-processors = <&zip_xy_to_scroll_mapper>;
@@ -107,6 +116,7 @@
            ------------------------------------------------------------------ */
         NUM2 {
             bindings = <
+            
 &trans  &trans  &trans  &trans  &kp SLASH  &trans  &kp N7  &kp N8  &kp N9  &trans
 &trans  &none   &none   &none   &trans     &trans  &kp N4  &kp N5  &kp N6  &trans
 &trans  &trans  &trans  &trans  &trans     &kp N0  &kp N1  &kp N2  &kp N3  &trans
