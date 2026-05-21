@@ -6,8 +6,8 @@
 /* ========================================================================== */
 /*  トラックボール・レイヤー連動スクロール化（構文エラー修正・完全版）          */
 /* ========================================================================== */
-
 /* 大元のdtsiにある右トラックボールのリスナーを有効化（通常時は普通のカーソル移動） */
+
 &tb_right_listener {
     status = "okay";
     device = <&tb_right_split>;
@@ -18,6 +18,7 @@
      * トラックボールの入力を監視し、
      * 指定したレイヤー（MOUSEレイヤーなど）のときだけ、移動量をスクロールに変換します。
      */
+
     scroll_layer_modifier: scroll_layer_modifier {
         compatible = "zmk,input-behavior-listener";
         device = <&tb_right_split>;
@@ -27,6 +28,7 @@
 };
 
 /* --- &mt と &lt のホールド判定を最適化 --- */
+
 &mt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
@@ -46,18 +48,20 @@
         /* ------------------------------------------------------------------
            レイヤー0：default_layer（通常時は普通のトラックボール）
            ------------------------------------------------------------------ */
+
         default_layer {
             bindings = <
-&lt 1 Q  &lt 5 W            &kp E        &kp R        &kp T        &kp Y        &kp U             &kp I              &kp O        &lt 4 P
-&kp A    &mt LEFT_SHIFT S  &mt LCTRL D  &mt LEFT_ALT F  &kp G        &kp H        &mt RIGHT_ALT J  &mt RCTRL K        &mt RSHFT L  &kp MINUS
-&kp Z    &kp X              &kp C        &kp V           &kp B        &kp N        &kp M            &kp COMMA          &kp DOT      &kp SLASH
-&kp ESC  &kp CAPSLOCK      &kp LCMD     &lt 2 TAB    &lt 3 SPACE   &kp BSPC     &lt 2 ENTER  &kp LS(CAPSLOCK)  &kp RWIN     &to 2
+&lt 3 Q  &lt 5 W           &kp E        &kp R           &kp T        &kp Y     &kp U            &kp I             &kp O        &lt 4 P
+&kp A    &mt LEFT_SHIFT S  &mt LCTRL D  &mt LEFT_ALT F  &kp G        &kp H     &mt RIGHT_ALT J  &mt RCTRL K       &mt RSHFT L  &kp MINUS
+&kp Z    &kp X             &kp C        &kp V           &kp B        &kp N     &kp M            &kp COMMA         &kp DOT      &kp SLASH
+&kp ESC  &kp CAPSLOCK      &kp LCMD     &lt 1 TAB       &lt 2 SPACE  &kp BSPC  &lt 2 ENTER      &kp LS(CAPSLOCK)  &kp RWIN     &to 1
             >;
         };
 
         /* ------------------------------------------------------------------
            レイヤー1：MOUSE（このレイヤーにいる間、トラックボールがスクロール化）
            ------------------------------------------------------------------ */
+
         MOUSE {
             label = "NUMBER";
             bindings = <
@@ -71,19 +75,21 @@
         /* ------------------------------------------------------------------
            レイヤー2：KIGO
            ------------------------------------------------------------------ */
+
         KIGO {
             label = "FUNCTION";
             bindings = <
-&kp EXCLAMATION  &kp AT_SIGN     &kp HASH   &kp DOLLAR  &kp PERCENT        &kp CARET      &kp AMPERSAND   &kp ASTERISK     &kp LEFT_PARENTHESIS    &kp RIGHT_PARENTHESIS
-&none            &none           &none      &none       &kp LS(SEMICOLON)  &kp SEMICOLON  &none           &none            &none                   &kp RIGHT_BRACKET
-&none            &none           &none      &none       &kp LS(SQT)        &kp SQT        &kp PLUS        &kp QUESTION     &kp PIPE                &kp NON_US_BACKSLASH
-&trans           &trans          &trans     &trans      &trans             &kp LS(CAPS)   &trans          &trans           &trans                  &kp ESCAPE
+&kp EXCLAMATION  &kp AT_SIGN  &kp HASH  &kp DOLLAR  &kp PERCENT        &kp CARET      &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS
+&none            &none        &none     &none       &kp LS(SEMICOLON)  &kp SEMICOLON  &none          &none         &none                 &kp RIGHT_BRACKET
+&none            &none        &none     &none       &kp LS(SQT)        &kp SQT        &kp PLUS       &kp QUESTION  &kp PIPE              &kp NON_US_BACKSLASH
+&trans           &trans       &trans    &trans      &trans             &kp LS(CAPS)   &trans         &trans        &trans                &kp ESCAPE
             >;
         };
 
         /* ------------------------------------------------------------------
            レイヤー3：NUM
            ------------------------------------------------------------------ */
+
         NUM {
             label = "MOUSE";
             bindings = <
@@ -97,6 +103,7 @@
         /* ------------------------------------------------------------------
            レイヤー4：BT
            ------------------------------------------------------------------ */
+
         BT {
             bindings = <
 &trans  &trans  &trans  &trans  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &trans
@@ -109,6 +116,7 @@
         /* ------------------------------------------------------------------
            レイヤー5：NUM2
            ------------------------------------------------------------------ */
+
         NUM2 {
             bindings = <
 &trans  &trans  &trans  &trans  &kp SLASH  &trans  &kp N7  &kp N8  &kp N9  &trans
