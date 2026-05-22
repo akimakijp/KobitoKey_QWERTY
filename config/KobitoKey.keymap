@@ -4,7 +4,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（完全動作版）                    */
+/* トラックボール・レイヤー連動スクロール化（完全修正・確定版）               */
 /* ========================================================================== */
 
 &tb_right_listener {
@@ -23,27 +23,19 @@
             flavor = "balanced";          // ロール（流れるようなタイピング）対策
             bindings = <&kp>, <&kp>;
         };
-
-        // 💡 右手トラックボールを滑らかにスクロールさせるための定義
-        p_scrl: pointer_scroll {
-            compatible = "zmk,behavior-automouse";
-            #binding-cells = <0>;
-            mode = "scroll";
-            val = <120>;                  // スクロール速度（好みに応じて調整してください）
-            delay-ms = <0>;
-        };
     };
 };
 
 / {
-    /* * 💡 ここが最重要の修正ポイントです
-     * 動かなかった &zip_xy_to_scroll_mapper の代わりに、上で定義した確実なスクロール（&p_scrl）を割り当てます
+    /* * 💡 ここが修正の核心です！
+     * トラックボールの生データに対して、ZMK標準の「XY軸 ➔ スクロール変換プロセッサ」を直接連結します。
+     * これにより、レイヤー3と5にいる間、トラックボールの転がりが完全に「画面のスクロール」に変化します。
      */
     scroll_layer_modifier: scroll_layer_modifier {
         compatible = "zmk,input-behavior-listener";
         device = <&tb_right_split>;
-        bindings = <&p_scrl>;             // 👈 確実に動くスクロール処理に変更
-        layers = <3 5>;                   // 👈 レイヤー3と5のときだけ有効化
+        bindings = <&zip_xy_to_scroll_mapper>; // 👈 生データをスクロールへ強制変換
+        layers = <3 5>;                        // 👈 レイヤー3と5のときだけ有効化
     };
 };
 
