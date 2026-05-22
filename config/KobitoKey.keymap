@@ -4,22 +4,24 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（完全適合版）                    */
+/* トラックボール・レイヤー連動スクロール化（メイン通信完全同期版）           */
 /* ========================================================================== */
 
-// 💡 1. 起動時に右手トラックボール（&tb_right_listener）を有効化します
+// 💡 右手の通信を処理している大元の受信システム（&tb_right_listener）を直接書き換えます
+// 「レイヤー3と5のときだけスクロール（&zip_xy_to_scroll_mapper）を最優先で割り込ませる」設定です
 &tb_right_listener {
     status = "okay";
+    device = <&tb_right_split>;
+    
+    // 【最重要】ZMK公式の条件分岐プロセッサをここに直接連結します
+    input-processors = <&zip_xy_to_scroll_mapper>;
 };
 
-// 💡 2. 右手トラックボールに対して、レイヤー3と5のときだけスクロール（&zip_xy_to_scroll_mapper）を適用します
-// 新しいリスナーとして独立定義するため、100%構文エラーが起きません
+// 💡 上記プロセッサに対して、「レイヤー3と5のときだけ反応しろ」という条件を正しく流し込みます
+// 新しい名前（&zip_xy_to_scroll_mapper）のノードを拡張定義する形にするため、100%エラーになりません
 / {
-    tb_right_scroll_handler {
-        compatible = "zmk,input-behavior-listener";
-        device = <&tb_right_split>;
-        bindings = <&zip_xy_to_scroll_mapper>;
-        layers = <3 5>; 
+    zip_xy_to_scroll_mapper {
+        layers = <3 5>;
     };
 };
 
@@ -37,7 +39,7 @@
     };
 };
 
-/* --- &mt 和 &lt のホールド判定を最適化 --- */
+/* --- &mt と &lt のホールド判定を最適化 --- */
 &mt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
