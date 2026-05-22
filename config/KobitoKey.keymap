@@ -14,6 +14,23 @@
 };
 
 / {
+    behaviors {
+        hm: home_row_mods {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            
+            // 💡 ここを調整します
+            tapping-term-ms = <250>;      // 少し長めにして暴発を防ぐ
+            quick-tap-ms = <200>;         // 連続タップ時の挙動を安定させる
+            require-prior-idle-ms = <125>;// 【重要】高速タイピング時の暴発を防止
+            flavor = "balanced";          // ロール（流れるようなタイピング）対策
+            
+            bindings = <&kp>, <&kp>;
+        };
+    };
+};
+
+/ {
     /*
      * トラックボールの入力を監視し、
      * 指定したレイヤー（MOUSEレイヤーなど）のときだけ、移動量をスクロールに変換します。
