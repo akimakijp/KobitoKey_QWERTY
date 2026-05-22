@@ -4,21 +4,24 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（完全競合排除版）                */
+/* トラックボール・レイヤー連動スクロール化（通常カーソル完全保護版）          */
 /* ========================================================================== */
 
-// 💡 大元の右手システム（&tb_right_listener）の内部に、直接プロセッサを上書き注入します。
-// これにより、通常カーソルを壊すことなく、レイヤー3と5のときだけ100%最優先でスクロールに変わります。
+// 💡 1. 大元の右手リスナーは「常時オン（通常カーソル）」の標準的な状態に戻します。
+// これにより、全レイヤーでのカーソル移動が完全に復活します。
 &tb_right_listener {
     status = "okay";
-    device = <&tb_right_split>;
-    input-processors = <&zip_xy_to_scroll_mapper>;
 };
 
-// 💡 ZMK公式の「レイヤー連動機能（&zip_scroll_scaler）」を使ってレイヤー3と5をターゲットに指定します。
-// プロセッサ内部ではなく、この書き方にするのがZMKのコンパイラを通す正しい文法です。
-&zip_xy_to_scroll_mapper {
-    status = "okay";
+// 💡 2. 通常カーソルを邪魔しない、完全に独立した「スクロール専用リスナー」を定義します。
+// ZMK公式の input-behavior-listener 規格を使い、レイヤー3と5のときだけスクロールを割り込ませます。
+/ {
+    kb_scroll_handler: kb_scroll_handler {
+        compatible = "zmk,input-behavior-listener";
+        device = <&tb_right_split>;
+        layers = <3 5>;                      // 👈 レイヤー3と5のときだけ有効化
+        bindings = <&zip_xy_to_scroll_mapper>;// 👈 右手の入力をスクロール量に強制変換
+    };
 };
 
 / {
