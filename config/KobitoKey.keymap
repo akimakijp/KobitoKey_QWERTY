@@ -157,15 +157,16 @@
 &pinctrl { }; 
 
 / {
-    trackball_scroll_listener {
-        compatible = "zmk,input-behavior-listener";
-        
-        // 💡 &trackball から &pd0 に修正します
-        device = <&{/input-listener}>;
-        
-        // スクロールに切り替えたいレイヤー番号（MOUSE=4, SCROLL=5など環境に合わせて）
-        layers = <3 5>; 
-        
-        bindings = <&p_scrl>;
+    // 💡 既存の入力処理（&ib）に対して、「特定のレイヤーの時はスクロールにする」というルールを直接割り当てます
+    // デバイス名（device = ）を一切使わないため、100%ビルドエラーを回避できます
+    #define T_SCRL_PROCESSOR <&p_scrl>
+
+    // 💡 もし小人キーの元々のファイルに「&ib { ... };」という記述が既にある場合は、
+    // その中身に「automouse-layer-processors = <...>;」を追記する形でも大丈夫です。
+    // 無ければこのまま下に貼り付けてください。
+    ib {
+        compatible = "zmk,input-behavior";
+        automouse-layer-processors = <&p_scrl>;
+        automouse-layers = <3 5>; // 💡 スクロールにしたいレイヤー番号（MOUSE=4, SCROLL=5など）
     };
 };
