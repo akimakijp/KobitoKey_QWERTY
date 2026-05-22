@@ -27,6 +27,14 @@
             
             bindings = <&kp>, <&kp>;
         };
+        // トラックボールの動きをスクロール（ホイール）に変換する定義
+        p_scrl: pointer_scroll {
+            compatible = "zmk,behavior-automouse";
+            #binding-cells = <0>;
+            mode = "scroll";
+            val = <80>;
+            delay-ms = <0>;
+        };
     };
 };
 
@@ -142,5 +150,23 @@
 &trans  &trans  &trans  &trans  &trans     &trans  &trans  &trans  &trans  &trans
             >;
         };
+    };
+};
+
+/* 右手トラックボールの動きを特定のレイヤーでスクロールに変える設定 */
+&pinctrl { }; // 競合防止の空定義
+
+/ {
+    trackball_scroll_listener {
+        compatible = "zmk,input-behavior-listener";
+        
+        // 💡 小人キーの右手側トラックボールのデバイス名を指定します
+        // 通常は &trackball または &glidepoint です。動かない場合はここを調整します。
+        device = <&trackball>; 
+        
+        // 💡 スクロールに切り替えたいレイヤーの番号を指定します（例: 3 と 5）
+        layers = <3 5>; 
+        
+        bindings = <&p_scrl>;
     };
 };
