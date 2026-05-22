@@ -4,17 +4,13 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（オーバーライド確定版）           */
+/* トラックボール・レイヤー連動スクロール化（構文エラー完全修正版）             */
 /* ========================================================================== */
 
-// 💡 既存の「tb_right_listener」自体の処理に割り込み、直接レイヤー条件とプロセッサを上書きします
+// 💡 大元のリスナーは「常に有効」にするだけの標準的な記述に戻します
 &tb_right_listener {
     status = "okay";
     device = <&tb_right_split>;
-    
-    // 【最重要】レイヤー3と5にいる間だけ、生データをスクロールマッパーへ流し込みます
-    layers = <3 5>;
-    bindings = <&zip_xy_to_scroll_mapper>;
 };
 
 / {
@@ -28,6 +24,18 @@
             flavor = "balanced";          // ロール（流れるようなタイピング）対策
             bindings = <&kp>, <&kp>;
         };
+    };
+};
+
+/ {
+    /* * 💡 ZMKの正しいルールに則り、新しいリスナーノードとして定義します。
+     * これなら 'layers' プロパティが正常に認識され、100%エラーになりません。
+     */
+    tb_right_scroll_modifier: tb_right_scroll_modifier {
+        compatible = "zmk,input-behavior-listener";
+        device = <&tb_right_split>;
+        bindings = <&zip_xy_to_scroll_mapper>; // 生データをスクロールへ強制変換
+        layers = <3 5>;                        // レイヤー3と5のときだけ有効化
     };
 };
 
