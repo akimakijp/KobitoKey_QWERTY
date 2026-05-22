@@ -4,12 +4,17 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（完全修正・確定版）               */
+/* トラックボール・レイヤー連動スクロール化（オーバーライド確定版）           */
 /* ========================================================================== */
 
+// 💡 既存の「tb_right_listener」自体の処理に割り込み、直接レイヤー条件とプロセッサを上書きします
 &tb_right_listener {
     status = "okay";
     device = <&tb_right_split>;
+    
+    // 【最重要】レイヤー3と5にいる間だけ、生データをスクロールマッパーへ流し込みます
+    layers = <3 5>;
+    bindings = <&zip_xy_to_scroll_mapper>;
 };
 
 / {
@@ -26,22 +31,7 @@
     };
 };
 
-/ {
-    /* * 💡 ここが修正の核心です！
-     * トラックボールの生データに対して、ZMK標準の「XY軸 ➔ スクロール変換プロセッサ」を直接連結します。
-     * これにより、レイヤー3と5にいる間、トラックボールの転がりが完全に「画面のスクロール」に変化します。
-     */
-
-    scroll_layer_modifier: scroll_layer_modifier {
-        compatible = "zmk,input-behavior-listener";
-        device = <&tb_right_split>;
-        bindings = <&zip_xy_to_scroll_mapper>; // 👈 生データをスクロールへ強制変換
-        layers = <3 5>;                        // 👈 レイヤー3と5のときだけ有効化
-    };
-};
-
 /* --- &mt と &lt のホールド判定を最適化 --- */
-
 &mt {
     flavor = "hold-preferred";
     tapping-term-ms = <170>;
@@ -59,7 +49,6 @@
         compatible = "zmk,keymap";
 
         /* レイヤー0：default_layer */
-
         default_layer {
             bindings = <
 &lt 3 Q  &lt 5 W           &kp E        &kp R           &kp T        &kp Y     &kp U            &kp I             &kp O        &lt 4 P
@@ -70,7 +59,6 @@
         };
 
         /* レイヤー1：MOUSE */
-
         MOUSE {
             label = "NUMBER";
             bindings = <
@@ -82,7 +70,6 @@
         };
 
         /* レイヤー2：KIGO */
-
         KIGO {
             label = "FUNCTION";
             bindings = <
@@ -94,7 +81,6 @@
         };
 
         /* レイヤー3：NUM */
-
         NUM {
             label = "MOUSE";
             bindings = <
@@ -106,7 +92,6 @@
         };
 
         /* レイヤー4：BT */
-
         BT {
             bindings = <
 &trans  &trans  &trans  &trans  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &trans
@@ -117,7 +102,6 @@
         };
 
         /* レイヤー5：NUM2 */
-
         NUM2 {
             bindings = <
 &trans  &trans  &trans  &trans  &kp SLASH  &trans  &kp N7  &kp N8  &kp N9  &trans
