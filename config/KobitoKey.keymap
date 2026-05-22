@@ -4,14 +4,12 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（インプットプロセッサ修正版）     */
+/* トラックボール・レイヤー連動スクロール化（完全復活版）                     */
 /* ========================================================================== */
 
-// 💡 エラーの原因だった「layers = ...」を排除し、ZMK標準のレイヤー機能（&zip_scroll_scaler）を割り当てます
+// 1. 大元のリスナーは「常に有効」にするだけの最もシンプルな状態に戻します（これで通常カーソルが復活します）
 &tb_right_listener {
     status = "okay";
-    device = <&tb_right_split>;
-    input-processors = <&zip_xy_to_scroll_mapper>;
 };
 
 / {
@@ -25,6 +23,18 @@
             flavor = "balanced";          // ロール（流れるようなタイピング）対策
             bindings = <&kp>, <&kp>;
         };
+    };
+};
+
+/ {
+    /* * 2. 💡 通常の移動を邪魔しないよう、完全に独立した「スクロール専用リスナー」を定義します。
+     * 「input-processors」として指定することで、競合を避けてレイヤー3と5だけでスクロール化が発動します。
+     */
+    tb_right_scroll_node: tb_right_scroll_node {
+        compatible = "zmk,input-behavior-listener";
+        device = <&tb_right_split>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+        layers = <3 5>; // 👈 レイヤー3と5のときだけスクロールに変換
     };
 };
 
