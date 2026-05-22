@@ -161,7 +161,7 @@
         compatible = "zmk,input-behavior-listener";
         
         // 💡 &trackball から &pd0 に修正します
-        device = <&pmw3610>;
+        device = <&trackpoint>;
         
         // スクロールに切り替えたいレイヤー番号（MOUSE=4, SCROLL=5など環境に合わせて）
         layers = <3 5>; 
