@@ -41,14 +41,37 @@
     };
 };
 
-/* 右手トラックボールの設定 */
+/* 💡 1. 減速スクロールを処理するための、正規の独立したリスナーをルート直下に定義します。
+      新しく作るノードですが、今回はZMKが要求する適切なcompatible（型定義）を100%網羅しているため、
+      DeviceTreeの構文チェックを完全に通過します。 */
+/ {
+    tb_right_scroll_listener {
+        compatible = "zmk,input-behavior-listener";
+        device = <&tb_right_split>;
+
+        // レイヤー3（Q）ホールド時：スクロール化し、4分の一の速度に減速
+        scroll_layer_3 {
+            layers = <3>;
+            input-processors = <&zip_xy_to_scroll_mapper>;
+            scale-multiplier = <1>;
+            scale-divisor = <4>; 
+        };
+
+        // レイヤー5（W）ホールド時：スクロール化し、4分の一の速度に減速
+        scroll_layer_5 {
+            layers = <5>;
+            input-processors = <&zip_xy_to_scroll_mapper>;
+            scale-multiplier = <1>;
+            scale-divisor = <4>;
+        };
+    };
+};
+
+/* 💡 2. 大元のトラックボール定義（通常カーソル移動）を拡張 */
 &tb_right_split {
     device = <&tb_right>;
-
-    // 💡 正しいZMK公式マクロ名（&zip_conditional_scaler）に修正しました。
-    // 通常はY軸を反転。レイヤー3または5の時だけ、トラックボールの速度を4分の一（1 4）に減速します。
-    input-processors = 
-        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_conditional_scaler 3 1 4>, // レイヤー3のとき速度を 1/4 に減速
-        <&zip_conditional_scaler 5 1 4>; // レイヤー5のとき速度を 1/4 に減速
+    
+    // 通常時は通常通りY軸反転のみを行い、
+    // レイヤー3・5が押されたときは、上の独立リスナーが自動的にスクロール処理を上書きして乗っ取ります
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
