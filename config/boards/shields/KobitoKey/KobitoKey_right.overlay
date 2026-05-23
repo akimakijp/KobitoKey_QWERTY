@@ -46,3 +46,26 @@
 
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
+
+/* ========================================================================== */
+/* レイヤー連動スクロール化 ＆ 4分の一減速設定（右手専用overlayへの注入）     */
+/* ========================================================================== */
+
+&tb_right_listener {
+    status = "okay";
+
+    scroll_layer_3 {
+        layers = <3>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+    };
+
+    scroll_layer_5 {
+        layers = <5>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+    };
+};
+
+&zip_xy_to_scroll_mapper {
+    scale-multiplier = <1>;
+    scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
+};
