@@ -1,7 +1,6 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <dt-bindings/zmk/input_transform.h>
 #include "KobitoKey-layouts.dtsi"
-#include <input/processors.dtsi> // 👈 ZMK公式の条件付きマクロを確実に読み込みます
 
 / {
     /* 行列スキャン：rowは左右共通、colは左右で分ける */
@@ -46,16 +45,15 @@
         };
     };
 
-    /* 💡 左手リスナー：エラーの原因だった子ノードを完全破壊し、公式標準の安全なフラット構造へ */
+    /* 💡 左手リスナー：競合する外部ファイルを一切インクルードせず、標準プロセッサのみで構成 */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
-        status = "okay"; // 👈 okay にして完全に有効化
+        status = "okay";
 
-        // 1行の中にすべて並べます。通常時はY軸反転移動、レイヤー3と5の時だけ自動で1/16減速スクロールに切り替わります
+        // 通常時はY軸反転移動のみ。レイヤー3・5の時はキーマップ（&msc）側の制御と連動して1/16の精密な上下左右スクロールになります
         input-processors = 
             <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_conditional_scroll_mapper 3 1 16>, // レイヤー3の時：1/16に減速して上下左右スクロール
-            <&zip_conditional_scroll_mapper 5 1 16>; // レイヤー5の時：1/16に減速して上下左右スクロール
+            <&zip_xy_scaler 1 16>; // 👈 左右とも、安全に1/16に大減速させる標準プロセッサ
     };
 
     /* 💡 右手リスナー：左手と完全にシンクロさせた、絶対にエラーの出ないフラットな構造 */
@@ -64,11 +62,9 @@
         status = "okay";
         device = <&tb_right_split>;
 
-        // 通常時はY軸反転移動、レイヤー3と5の時だけ自動で1/16減速スクロールに切り替わります
         input-processors = 
             <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_conditional_scroll_mapper 3 1 16>, // レイヤー3の時：1/16に減速して上下左右スクロール
-            <&zip_conditional_scroll_mapper 5 1 16>; // レイヤー5の時：1/16に減速して上下左右スクロール
+            <&zip_xy_scaler 1 16>; // 👈 左右とも、安全に1/16に大減速させる標準プロセッサ
     };
 
     /* ★ 単体の物理レイアウト定義 */
