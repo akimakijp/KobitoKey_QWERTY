@@ -4,25 +4,31 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（左右ビルド完全適合版）          */
+/* トラックボール・レイヤー連動スクロール化（左右ビルド完全分離・速度調整版）   */
 /* ========================================================================== */
 
-&tb_right_listener {
-    status = "okay";
-    device = <&tb_right_split>;
+// 💡 1. 成功していたレイヤー別の上書き（親子構造）を、左手ビルドから完全に隠すために別名で新しく定義します。
+// これにより、通常時はカーソル移動、3と5のときだけスクロールへ変わり、さらに「4分の一」に減速されます。
+/ {
+    tb_right_scroll_scaler: tb_right_scroll_scaler {
+        compatible = "zmk,input-behavior-listener";
+        device = <&tb_right_split>;
+        layers = <3 5>;
+        bindings = <&zip_xy_to_scroll_mapper>;
+    };
+};
 
-    // 💡 右手リスナーの内部に直接「スクロール変換＋速度調整（4分の一に減速）」をネストします。
-    // この書き方なら左手（West）のビルド時にエラーにならず、右手のスクロール量だけを綺麗に落とせます。
+// 💡 2. 右手スクロールの移動量をここでコントロールします。
+// 呼び出し元のプロセッサに直接「4分の一（divisor = 4）」をネストさせることで、左手ビルドを巻き込まずに安全に減速させます。
+&zip_xy_to_scroll_mapper {
+    status = "okay";
     scroll_layer_3 {
         layers = <3>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
         scale-multiplier = <1>;
         scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
     };
-
     scroll_layer_5 {
         layers = <5>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
         scale-multiplier = <1>;
         scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
     };
@@ -85,7 +91,6 @@
             label = "FUNCTION";
             bindings = <
 &kp EXCLAMATION  &kp AT_SIGN  &kp HASH   &kp DOLLAR    &kp PERCENT        &kp CARET      &kp AMPERSAND   &kp ASTERISK     &kp LEFT_PARENTHESIS    &kp RIGHT_PARENTHESIS
-&none            &kp LSHFT    &kp LCTRL  &kp LEFT_ALT  &kp LS(SEMICOLON)  &kp SEMICOLON  &hm RALT EQUAL  &hm RCTRL SLASH  &hm RSHFT LEFT_BRACKET  &kp RIGHT_BRACKET
 &none            &none        &none      &none         &kp LS(SQT)        &kp SQT        &kp PLUS        &kp QUESTION     &kp PIPE                &kp NON_US_BACKSLASH
 &trans           &trans       &trans     &trans        &trans             &kp LS(CAPS)   &trans          &trans           &trans                  &kp ESCAPE
             >;
