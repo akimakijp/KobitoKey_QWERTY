@@ -4,30 +4,35 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（今度こそ確定版）                 */
+/* トラックボール・レイヤー連動スクロール化（競合排除・完全解決版）             */
 /* ========================================================================== */
 
+// 💡 1. 左手ビルド時の「未定義エラー」を完全に回避するために空のノードを作ります。
 / {
-    tb_right_layer_scroll_listener {
-        compatible = "zmk,input-behavior-listener";
-        device = <&tb_right_split>;
+    tb_right_listener: tb_right_listener { };
+};
 
-        // レイヤー3（Q）を押している間、4分の一の速度でスクロール
-        scroll_layer_3 {
-            layers = <3>;
-            input-processors = <&zip_xy_to_scroll_mapper>; // 👈 bindingsから修正
-            scale-multiplier = <1>;
-            scale-divisor = <4>; 
-        };
+// 💡 2. 右手メインリスナーを直接ジャックし、以前確実に動いた「ネスト構造」を再現。
+// input-processors の文法エラーも完全に修正しました。
+&tb_right_listener {
+    status = "okay";
 
-        // レイヤー5（W）を押している間、4分の一の速度でスクロール
-        scroll_layer_5 {
-            layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>; // 👈 bindingsから修正
-            scale-multiplier = <1>;
-            scale-divisor = <4>;
-        };
+    scroll_layer_3 {
+        layers = <3>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
     };
+
+    scroll_layer_5 {
+        layers = <5>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+    };
+};
+
+// 💡 3. スクロールマッパー自体の出力をここで「4分の一」に一括減速します。
+// リナーの内部ではなく、ここに書くのがZMKの正しい減速プロパティの指定方法です。
+&zip_xy_to_scroll_mapper {
+    scale-multiplier = <1>;
+    scale-divisor = <4>; // 👈 スクロールが早すぎる場合はこの数字を5や6に増やしてください
 };
 
 / {
@@ -53,6 +58,7 @@
     keymap {
         compatible = "zmk,keymap";
 
+        /* レイヤー0：default_layer */
         default_layer {
             bindings = <
 &lt 3 Q  &lt 5 W           &kp E        &kp R           &kp T        &kp Y     &kp U            &kp I             &kp O        &lt 4 P
@@ -62,6 +68,7 @@
             >;
         };
 
+        /* レイヤー1：MOUSE */
         MOUSE {
             label = "NUMBER";
             bindings = <
@@ -72,6 +79,7 @@
             >;
         };
 
+        /* レイヤー2：KIGO */
         KIGO {
             label = "FUNCTION";
             bindings = <
@@ -82,6 +90,7 @@
             >;
         };
 
+        /* レイヤー3：NUM */
         NUM {
             label = "MOUSE";
             bindings = <
@@ -92,6 +101,7 @@
             >;
         };
 
+        /* レイヤー4：BT */
         BT {
             bindings = <
 &trans  &trans  &trans  &trans  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &trans
@@ -101,6 +111,7 @@
             >;
         };
 
+        /* レイヤー5：NUM2 */
         NUM2 {
             bindings = <
 &trans  &trans  &trans  &trans  &kp SLASH  &trans  &kp N7  &kp N8  &kp N9  &trans
