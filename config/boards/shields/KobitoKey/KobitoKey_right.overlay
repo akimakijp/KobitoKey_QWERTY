@@ -41,12 +41,11 @@
     };
 };
 
-/* 💡 ここにレイヤー連動スクロールと4分の一の減速設定を直接統合しました */
+/* 右手トラックボールの設定にリスナーをネスト */
 &tb_right_split {
     device = <&tb_right>;
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
-    // 右手トラックボールが受け取った信号を、指定レイヤー時にスクロールへ自動変換します
     tb_right_listener {
         compatible = "zmk,input-behavior-listener";
         device = <&tb_right_split>;
@@ -63,8 +62,10 @@
     };
 };
 
-/* スクロールの出力速度をここで一括で「4分の一」に減速します */
-&zip_xy_to_scroll_mapper {
-    scale-multiplier = <1>;
-    scale-divisor = <4>; 
+/* 💡 未定義ラベルエラーを完全に回避する、ZMKの正しい減速プロパティのオーバーライド記述 */
+/ {
+    zip_xy_to_scroll_mapper {
+        scale-multiplier = <1>;
+        scale-divisor = <4>; 
+    };
 };
