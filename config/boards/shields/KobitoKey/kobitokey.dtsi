@@ -45,26 +45,19 @@
         };
     };
 
-    /* 💡 左手リスナー：競合する外部ファイルを一切インクルードせず、標準プロセッサのみで構成 */
+    /* 💡 左手リスナー：余計なコードをすべて排除し、一番最初に100%動いていたベース状態に固定 */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-
-        // 通常時はY軸反転移動のみ。レイヤー3・5の時はキーマップ（&msc）側の制御と連動して1/16の精密な上下左右スクロールになります
-        input-processors = 
-            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_xy_scaler 1 16>; // 👈 左右とも、安全に1/16に大減速させる標準プロセッサ
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
-    /* 💡 右手リスナー：左手と完全にシンクロさせた、絶対にエラーの出ないフラットな構造 */
+    /* 💡 右手リスナー：余計なコードをすべて排除し、一番最初に100%動いていたベース状態に固定 */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_right_split>;
-
-        input-processors = 
-            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_xy_scaler 1 16>; // 👈 左右とも、安全に1/16に大減速させる標準プロセッサ
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
     /* ★ 単体の物理レイアウト定義 */
