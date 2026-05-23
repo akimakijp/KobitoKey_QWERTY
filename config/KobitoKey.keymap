@@ -4,11 +4,11 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（左右完全適合・減速確定版）         */
+/* トラックボール・レイヤー連動スクロール化（左右ビルド完全適合版）          */
 /* ========================================================================== */
 
 // 💡 1. 完全に独立したスクロールリスナーを定義します。
-// ここに余計な減速プロパティを書かないことで、スクロール機能が100%確実に発動します。
+// これにより、レイヤー3と5のときだけ右手トラックボールが通常カーソルからスクロールへ変化します。
 / {
     tb_right_scroll_handler {
         compatible = "zmk,input-behavior-listener";
@@ -18,15 +18,15 @@
     };
 };
 
-// 💡 2. 左手ビルド時の「未定義エラー」を完全に回避するための魔法の記述です。
-// 左手側には仮のノードを作り、右手側には本物の減速（4分の一）を安全に流し込みます。
-/ {
-    zip_xy_to_scroll_mapper: zip_xy_to_scroll_mapper {
-        compatible = "zmk,input-processor-code-mapper";
-        scale-multiplier = <1>;
-        scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
-    };
+// 💡 2. 右手（East）のビルド時だけ、スクロール速度を「4分の一」に落とす設定を流し込みます。
+// この条件分岐（#if）により、左手（West）をビルドするときは完全にスルーされるため、100%エラーが発生しません。
+#if !defined(SHIELD_KOBITOKEY_LEFT) && !defined(SHIELD_KOBITOKEY_LEFT_RGBLED_ADAPTER)
+&zip_xy_to_scroll_mapper {
+    status = "okay";
+    scale-multiplier = <1>;
+    scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
 };
+#endif
 
 / {
     behaviors {
