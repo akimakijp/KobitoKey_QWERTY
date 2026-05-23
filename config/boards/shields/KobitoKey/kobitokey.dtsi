@@ -51,15 +51,15 @@
         status = "disabled";
     };
 
-    /* 💡 右手リスナーを「okay」にし、レイヤー別の挙動（通常・スクロール・減速）を内部に組み込みました */
+    /* 💡 compatible をレイヤー制御に対応した正規の "zmk,input-behavior-listener" に修正しました */
     tb_right_listener: tb_right_listener {
-        compatible = "zmk,input-listener";
-        status = "okay"; // 👈 disabled から okay に変更
+        compatible = "zmk,input-behavior-listener"; // 👈 ここを zmk,input-listener から変更！
+        status = "okay";
         device = <&tb_right_split>;
 
         // 1️⃣ 通常カーソル移動（レイヤー3と5以外の時にカーソルを動かす）
         normal_move {
-            layers = <0 1 2 4 6>; // 3 と 5 を綺麗に除外
+            layers = <0 1 2 4 6>; 
         };
 
         // 2️⃣ レイヤー3（Q）ホールド時：4分の一に減速してスクロール
