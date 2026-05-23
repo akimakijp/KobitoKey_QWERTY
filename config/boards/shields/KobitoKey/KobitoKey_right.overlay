@@ -41,31 +41,30 @@
     };
 };
 
+/* 💡 ここにレイヤー連動スクロールと4分の一の減速設定を直接統合しました */
 &tb_right_split {
     device = <&tb_right>;
-
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-};
 
-/* ========================================================================== */
-/* レイヤー連動スクロール化 ＆ 4分の一減速設定（右手専用overlayへの注入）     */
-/* ========================================================================== */
+    // 右手トラックボールが受け取った信号を、指定レイヤー時にスクロールへ自動変換します
+    tb_right_listener {
+        compatible = "zmk,input-behavior-listener";
+        device = <&tb_right_split>;
 
-&tb_right_listener {
-    status = "okay";
+        scroll_layer_3 {
+            layers = <3>;
+            input-processors = <&zip_xy_to_scroll_mapper>;
+        };
 
-    scroll_layer_3 {
-        layers = <3>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
-    };
-
-    scroll_layer_5 {
-        layers = <5>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
+        scroll_layer_5 {
+            layers = <5>;
+            input-processors = <&zip_xy_to_scroll_mapper>;
+        };
     };
 };
 
+/* スクロールの出力速度をここで一括で「4分の一」に減速します */
 &zip_xy_to_scroll_mapper {
     scale-multiplier = <1>;
-    scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
+    scale-divisor = <4>; 
 };
