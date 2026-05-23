@@ -4,23 +4,25 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（通常カーソル完全保護版）          */
+/* トラックボール・レイヤー連動スクロール化（ZMK公式ネスト構造版）            */
 /* ========================================================================== */
 
-// 💡 1. 大元の右手リスナーは「常時オン（通常カーソル）」の標準的な状態に戻します。
-// これにより、全レイヤーでのカーソル移動が完全に復活します。
+// 💡 ZMK公式の「Layer Specific Overrides」仕様に100%適合させます。
+// 大元のリスナーの「内側（子ノード）」にレイヤー3と5の条件をネストさせることで、
+// 通常時はカーソル移動、3と5のときだけ確実にスクロールへと動作がハックされます。
 &tb_right_listener {
     status = "okay";
-};
+    device = <&tb_right_split>;
 
-// 💡 2. 通常カーソルを邪魔しない、完全に独立した「スクロール専用リスナー」を定義します。
-// ZMK公式の input-behavior-listener 規格を使い、レイヤー3と5のときだけスクロールを割り込ませます。
-/ {
-    kb_scroll_handler: kb_scroll_handler {
-        compatible = "zmk,input-behavior-listener";
-        device = <&tb_right_split>;
-        layers = <3 5>;                      // 👈 レイヤー3と5のときだけ有効化
-        bindings = <&zip_xy_to_scroll_mapper>;// 👈 右手の入力をスクロール量に強制変換
+    // 👇 ここがZMK公式の「レイヤー別切り替え」の正しい記述です
+    scroll_layer_3 {
+        layers = <3>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+    };
+
+    scroll_layer_5 {
+        layers = <5>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
     };
 };
 
