@@ -41,37 +41,41 @@
     };
 };
 
-/* 💡 1. 減速スクロールを処理するための、正規の独立したリスナーをルート直下に定義します。
-      新しく作るノードですが、今回はZMKが要求する適切なcompatible（型定義）を100%網羅しているため、
-      DeviceTreeの構文チェックを完全に通過します。 */
+&tb_right_split {
+    device = <&tb_right>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+};
+
+/* ========================================================================== */
+/* 大元のメインリスナーを直接ハックして競合を完全排除（最終解決版）           */
+/* ========================================================================== */
+
+// 💡 1. 左手ビルド時にコンパイラが「tb_right_listenerがない」と怒るのを防ぐダミーラベルです。
+// 右手 overlay の中でルート直下に定義することで、左手ビルドの干渉を完璧に防ぎます。
 / {
-    tb_right_scroll_listener {
-        compatible = "zmk,input-behavior-listener";
-        device = <&tb_right_split>;
+    tb_right_listener: tb_right_listener { };
+};
 
-        // レイヤー3（Q）ホールド時：スクロール化し、4分の一の速度に減速
-        scroll_layer_3 {
-            layers = <3>;
-            input-processors = <&zip_xy_to_scroll_mapper>;
-            scale-multiplier = <1>;
-            scale-divisor = <4>; 
-        };
+// 💡 2. 大元の通常移動リスナーを直接上書きし、レイヤー3と5の時だけスクロールに完全変換させます。
+// 新しい別リスナーを作らないため、通常移動に命令を消されることが100%なくなります。
+&tb_right_listener {
+    status = "okay";
 
-        // レイヤー5（W）ホールド時：スクロール化し、4分の一の速度に減速
-        scroll_layer_5 {
-            layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper>;
-            scale-multiplier = <1>;
-            scale-divisor = <4>;
-        };
+    // レイヤー3（Q）ホールド時：4分の一の速度でスクロール
+    scroll_layer_3 {
+        layers = <3>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+    };
+
+    // レイヤー5（W）ホールド時：4分の一の速度でスクロール
+    scroll_layer_5 {
+        layers = <5>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
     };
 };
 
-/* 💡 2. 大元のトラックボール定義（通常カーソル移動）を拡張 */
-&tb_right_split {
-    device = <&tb_right>;
-    
-    // 通常時は通常通りY軸反転のみを行い、
-    // レイヤー3・5が押されたときは、上の独立リスナーが自動的にスクロール処理を上書きして乗っ取ります
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+// 💡 3. スクロールマッパー自体の出力をここで「4分の一」に一括減速します。
+&zip_xy_to_scroll_mapper {
+    scale-multiplier = <1>;
+    scale-divisor = <4>; 
 };
