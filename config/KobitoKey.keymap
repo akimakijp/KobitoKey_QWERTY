@@ -56,7 +56,7 @@
 &custom_lt 3 Q  &custom_lt 5 W    &kp E        &kp R             &kp T               &kp Y     &kp U               &kp I             &kp O        &custom_lt 4 P
 &kp A           &hm LEFT_SHIFT S  &hm LCTRL D  &hm LEFT_ALT F    &kp G               &kp H     &hm RIGHT_ALT J     &hm RCTRL K       &hm RSHFT L  &kp MINUS
 &kp Z           &kp X             &kp C        &kp V             &kp B               &kp N     &kp M               &kp COMMA         &kp DOT      &kp SLASH
-&kp ESC         &kp CAPSLOCK      &kp LCMD     &custom_lt 1 TAB  &custom_lt 2 SPACE  &kp BSPC  &custom_lt 2 ENTER  &kp LS(CAPSLOCK)  &to 3        &to 0
+&kp ESC         &kp CAPSLOCK      &kp LCMD     &custom_lt 1 TAB  &custom_lt 2 SPACE  &kp BSPC  &custom_lt 2 ENTER  &kp LS(CAPSLOCK)  &to 3        &to 1
             >;
         };
 
@@ -92,7 +92,7 @@
 &trans  &none   &trans  &trans  &kp KP_NUMLOCK  &kp KP_SLASH     &kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_MINUS
 &trans  &none   &none   &none   &kp ASTERISK    &kp KP_MULTIPLY  &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp KP_PLUS
 &trans  &trans  &trans  &trans  &kp PERIOD      &kp KP_NUMBER_0  &kp KP_N1  &kp KP_N2  &kp KP_N3  &kp KP_EQUAL
-&trans  &trans  &trans  &trans  &trans          &trans           &trans     &trans     &to 0      &to 0
+&trans  &trans  &trans  &trans  &trans          &trans           &trans     &trans     &to 0      &to 1
             >;
         };
 
