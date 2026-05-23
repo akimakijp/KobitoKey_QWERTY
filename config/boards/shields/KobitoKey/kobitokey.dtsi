@@ -42,40 +42,26 @@
         tb_right_split: tb_right_split@0 {
             compatible = "zmk,input-split";
             reg = <0>;
+            
+            // 💡 トラックボールのデバイス自体の根元に、レイヤー別の速度制御を仕込みます。
+            // これにより、システムをクラッシュさせずに、レイヤー3と5の時だけ動きを4分の一（1 4）に間引くことができます。
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+                <&zip_conditional_scaler 3 1 4>, // レイヤー3の時、速度を1/4に落とす
+                <&zip_conditional_scaler 5 1 4>; // レイヤー5の時、速度を1/4に落とす
         };
     };
 
-    /* リスナー（中央で有効化。周辺から来た入力もここで処理） */
+    /* リスナー（一番安定して動いていた、元の正常な型定義に完全巻き戻し） */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
 
-    /* 右手リスナー（各サブノードにデバイスの紐付けを徹底定義） */
     tb_right_listener: tb_right_listener {
-        compatible = "zmk,input-behavior-listener";
-        status = "okay";
+        compatible = "zmk,input-listener"; // 👈 クラッシュの最大の原因だった behavior から元の listener へ戻しました
+        status = "okay";                    // 👈 常にトラックボールを有効化
         device = <&tb_right_split>;
-
-        // 1️⃣ 通常カーソル移動（レイヤー3と5以外の時にカーソルを動かす）
-        normal_move {
-            device = <&tb_right_split>; // 👈 デバイスを明記
-            layers = <0 1 2 4 6>; 
-        };
-
-        // 2️⃣ レイヤー3（Q）ホールド時：4分の一に減速してスクロール
-        scroll_layer_3 {
-            device = <&tb_right_split>; // 👈 デバイスを明記
-            layers = <3>;
-            input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
-        };
-
-        // 3️⃣ レイヤー5（W）ホールド時：4分の一に減速してスクロール
-        scroll_layer_5 {
-            device = <&tb_right_split>; // 👈 デバイスを明記
-            layers = <5>;
-            input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
-        };
     };
 };
 
