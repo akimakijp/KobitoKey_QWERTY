@@ -45,22 +45,61 @@
         };
     };
 
-    /* 💡 左手リスナー：あなたが最初に提示してくれたエラーゼロの構造に完全復帰 */
+    /* 💡 左手リスナー：右手と100%同じ構成にし、ルート直下に完全格納しました */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
-        status = "disabled"; // 👈 一旦元の disabled に戻し、競合を完全排除
+        status = "okay"; // 👈 必ず okay にして有効化
+
+        /* 通常時（ベース設定）：Y軸を反転して通常カーソル移動 */
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+        /* レイヤー3（Qホールド時）：1/16減速で【上下左右】スクロール */
+        scroll_l3 {
+            layers = <3>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+                <&zip_xy_scaler 1 16>,
+                <&zip_xy_to_scroll_mapper>; // 👈 これにより上下左右の全方向スクロールが有効化
+        };
+
+        /* レイヤー5（Wホールド時）：1/16減速で【上下左右】スクロール */
+        scroll_l5 {
+            layers = <5>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+                <&zip_xy_scaler 1 16>,
+                <&zip_xy_to_scroll_mapper>;
+        };
     };
 
-    /* 💡 右手リスナー：あなたが最初に提示してくれたエラーゼロの構造に完全復帰 */
+    /* 💡 右手リスナー：壊れてしまった設定を完全に修復し、ルート直下に完全格納しました */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_right_split>;
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-    };
-};
 
-/ {
+        /* 通常時（ベース設定）：Y軸を反転してカーソル移動 */
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+        /* レイヤー3（Qホールド時）：以前成功した「1/16に大減速してスクロール」を完全復活 */
+        scroll_l3 {
+            layers = <3>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+                <&zip_xy_scaler 1 16>,
+                <&zip_xy_to_scroll_mapper>;
+        };
+
+        /* レイヤー5（Wホールド時）：以前成功した「1/16に大減速してスクロール」を完全復活 */
+        scroll_l5 {
+            layers = <5>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+                <&zip_xy_scaler 1 16>,
+                <&zip_xy_to_scroll_mapper>;
+        };
+    };
+
     /* ★ 単体の物理レイアウト定義 */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
