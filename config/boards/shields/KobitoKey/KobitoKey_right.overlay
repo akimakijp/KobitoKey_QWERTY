@@ -45,17 +45,11 @@
 &tb_right_split {
     device = <&tb_right>;
 
-    // 💡 1. 条件付きスクロールマッパー（&zip_scroll_conditional）を指定します。
-    // 通常時はY軸反転のみ。指定レイヤー時のみスクロールに切り替わります。
+    // 💡 ZMKPointing公式の正規条件マクロ（&zip_conditional_scaler_to_scroll_mapper）を使用します。
+    // 通常時は通常通りY軸反転のみ。
+    // レイヤー3が有効な時、およびレイヤー5が有効な時だけ、入力を「4分の一（1 4）」に落としたスクロール信号に変換します。
     input-processors = 
         <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_scroll_conditional>;
-
-    // 💡 2. スクロールを発動させるレイヤー（3 と 5）を指定します。
-    scroll-layers = <3 5>;
-
-    // 💡 3. スクロール時の速度をここで直接「4分の一」に減速させます。
-    // （数字を 5 や 6 に大きくするほど、さらに遅く精密なスクロールになります）
-    scroll-scale-multiplier = <1>;
-    scroll-scale-divisor = <4>;
+        <&zip_conditional_scaler_to_scroll_mapper 3 1 4>, // レイヤー3の時、1/4の速度でスクロール
+        <&zip_conditional_scaler_to_scroll_mapper 5 1 4>; // レイヤー5の時、1/4の速度でスクロール
 };
