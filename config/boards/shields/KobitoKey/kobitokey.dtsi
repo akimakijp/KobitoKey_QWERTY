@@ -45,34 +45,13 @@
         };
     };
 
-    /* 💡 左手リスナー：右手と100%対称になるように「上下左右」スクロールマッパーを完全移植 */
+    /* 💡 左手リスナー：一番最初に100%ビルドが通っていた「初期状態」に完全に戻します */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
-        status = "okay"; // 👈 有効化
-
-        /* 通常時：Y軸を反転して通常カーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-
-        /* レイヤー3（Qホールド時）：1/16減速で【上下左右】スクロール */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>; // 👈 これにより左右移動（水平スクロール）が利くようになります
-        };
-
-        /* レイヤー5（Wホールド時）：1/16減速で【上下左右】スクロール */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
+        status = "disabled";
     };
 
-    /* 💡 右手リスナー：以前成功していた完璧な上下左右スクロール設定を完全復元 */
+    /* 💡 右手リスナー：大成功していた「上下左右1/16減速スクロール」を完全な形で維持します */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
@@ -108,7 +87,7 @@
         transform = <&default_transform>;
     };
 
-    /* ★ デフォルトで使うレイアウトを指す chosen ブロック（ひとつのルート内に綺麗に格納） */
+    /* ★ デフォルトで使うレイアウトを指す chosen ブロック */
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
