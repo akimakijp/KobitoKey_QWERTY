@@ -42,26 +42,35 @@
         tb_right_split: tb_right_split@0 {
             compatible = "zmk,input-split";
             reg = <0>;
-            
-            // 💡 トラックボールのデバイス自体の根元に、レイヤー別の速度制御を仕込みます。
-            // これにより、システムをクラッシュさせずに、レイヤー3と5の時だけ動きを4分の一（1 4）に間引くことができます。
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_conditional_scaler 3 1 4>, // レイヤー3の時、速度を1/4に落とす
-                <&zip_conditional_scaler 5 1 4>; // レイヤー5の時、速度を1/4に落とす
         };
     };
 
-    /* リスナー（一番安定して動いていた、元の正常な型定義に完全巻き戻し） */
+    /* リスナー（中央で有効化。周辺から来た入力もここで処理） */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
 
+    /* 💡 ZMK公式仕様に完全準拠した右手リスナーの定義 */
     tb_right_listener: tb_right_listener {
-        compatible = "zmk,input-listener"; // 👈 クラッシュの最大の原因だった behavior から元の listener へ戻しました
-        status = "okay";                    // 👈 常にトラックボールを有効化
+        compatible = "zmk,input-listener"; // 👈 1番安定する公式標準の型に戻しました
+        status = "okay";
         device = <&tb_right_split>;
+
+        /* 1️⃣ 通常時（ベース設定）：何もレイヤーを押していない時は、このプロセッサ（通常移動）が動きます */
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+        /* 2️⃣ レイヤー3（Qホールド時）：ZMKのルールに従い、最優先で割り込んで4分の一スクロールにします */
+        scroll_l3 {
+            layers = <3>;
+            input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
+        };
+
+        /* 3️⃣ レイヤー5（Wホールド時）：ZMKのルールに従い、最優先で割り込んで4分の一スクロールにします */
+        scroll_l5 {
+            layers = <5>;
+            input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
+        };
     };
 };
 
