@@ -44,28 +44,12 @@
 /* 右手トラックボールの設定 */
 &tb_right_split {
     device = <&tb_right>;
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
-    // 💡 リスナー全体の挙動をここで明確にコントロールします
-    tb_right_listener {
-        compatible = "zmk,input-behavior-listener";
-        device = <&tb_right_split>;
-
-        // 1️⃣ 通常のカーソル移動（レイヤー0, 1, 2, 4 のときだけ動くように限定）
-        normal_move {
-            layers = <0 1 2 4>;
-        };
-
-        // 2️⃣ レイヤー3（Q）ホールド時：4分の一の速度でスクロール
-        scroll_layer_3 {
-            layers = <3>;
-            input-processors = <&zip_xy_to_scroll_mapper 1 4>;
-        };
-
-        // 3️⃣ レイヤー5（W）ホールド時：4分の一の速度でスクロール
-        scroll_layer_5 {
-            layers = <5>;
-            input-processors = <&zip_xy_to_scroll_mapper 1 4>;
-        };
-    };
+    // 💡 大元の入力プロセッサを直接拡張します。
+    // 通常はY軸反転のみ。レイヤー3または5が押されている時だけ、
+    // 自動的に「4分の一に減速されたスクロール信号」へと直接割り込み変換をかけます。
+    input-processors = 
+        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+        <&zip_xy_to_scroll_mapper_conditional 3 1 4>, // レヤー3の時、4分の一でスクロール
+        <&zip_xy_to_scroll_mapper_conditional 5 1 4>; // レヤー5の時、4分の一でスクロール
 };
