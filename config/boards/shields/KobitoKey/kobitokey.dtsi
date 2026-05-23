@@ -51,25 +51,31 @@
         status = "disabled";
     };
 
-    /* 💡 ZMK公式仕様に完全準拠した右手リスナーの定義 */
+    /* 右手リスナーの定義 */
     tb_right_listener: tb_right_listener {
-        compatible = "zmk,input-listener"; // 👈 1番安定する公式標準の型に戻しました
+        compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_right_split>;
 
-        /* 1️⃣ 通常時（ベース設定）：何もレイヤーを押していない時は、このプロセッサ（通常移動）が動きます */
+        /* 1️⃣ 通常時（ベース設定）：Y軸を反転してカーソル移動 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
-        /* 2️⃣ レイヤー3（Qホールド時）：ZMKのルールに従い、最優先で割り込んで4分の一スクロールにします */
+        /* 2️⃣ レイヤー3（Qホールド時）：Y軸を反転し、1/16に大減速してスクロール */
         scroll_l3 {
             layers = <3>;
-            input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, // 👈 スクロールも通常移動と同じ向きに反転
+                <&zip_xy_scaler 1 16>,                        // 👈 速度を 1/4 から 1/16 に大幅カット
+                <&zip_xy_to_scroll_mapper>;
         };
 
-        /* 3️⃣ レイヤー5（Wホールド時）：ZMKのルールに従い、最優先で割り込んで4分の一スクロールにします */
+        /* 3️⃣ レイヤー5（Wホールド時）：Y軸を反転し、1/16に大減速してスクロール */
         scroll_l5 {
             layers = <5>;
-            input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, // 👈 スクロールも通常移動と同じ向きに反転
+                <&zip_xy_scaler 1 16>,                        // 👈 速度を 1/4 から 1/16 に大幅カット
+                <&zip_xy_to_scroll_mapper>;
         };
     };
 };
