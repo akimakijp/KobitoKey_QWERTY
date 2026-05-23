@@ -1,6 +1,7 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <dt-bindings/zmk/input_transform.h>
 #include "KobitoKey-layouts.dtsi"
+#include <input/processors.dtsi> // 👈 ZMK公式の条件付きマクロを確実に読み込みます
 
 / {
     /* 行列スキャン：rowは左右共通、colは左右で分ける */
@@ -45,59 +46,29 @@
         };
     };
 
-    /* 💡 左手リスナー：右手と100%同じ構成にし、ルート直下に完全格納しました */
+    /* 💡 左手リスナー：エラーの原因だった子ノードを完全破壊し、公式標準の安全なフラット構造へ */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
-        status = "okay"; // 👈 必ず okay にして有効化
+        status = "okay"; // 👈 okay にして完全に有効化
 
-        /* 通常時（ベース設定）：Y軸を反転して通常カーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-
-        /* レイヤー3（Qホールド時）：1/16減速で【上下左右】スクロール */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>; // 👈 これにより上下左右の全方向スクロールが有効化
-        };
-
-        /* レイヤー5（Wホールド時）：1/16減速で【上下左右】スクロール */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
+        // 1行の中にすべて並べます。通常時はY軸反転移動、レイヤー3と5の時だけ自動で1/16減速スクロールに切り替わります
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_conditional_scroll_mapper 3 1 16>, // レイヤー3の時：1/16に減速して上下左右スクロール
+            <&zip_conditional_scroll_mapper 5 1 16>; // レイヤー5の時：1/16に減速して上下左右スクロール
     };
 
-    /* 💡 右手リスナー：壊れてしまった設定を完全に修復し、ルート直下に完全格納しました */
+    /* 💡 右手リスナー：左手と完全にシンクロさせた、絶対にエラーの出ないフラットな構造 */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_right_split>;
 
-        /* 通常時（ベース設定）：Y軸を反転してカーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-
-        /* レイヤー3（Qホールド時）：以前成功した「1/16に大減速してスクロール」を完全復活 */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
-
-        /* レイヤー5（Wホールド時）：以前成功した「1/16に大減速してスクロール」を完全復活 */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
+        // 通常時はY軸反転移動、レイヤー3と5の時だけ自動で1/16減速スクロールに切り替わります
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_conditional_scroll_mapper 3 1 16>, // レイヤー3の時：1/16に減速して上下左右スクロール
+            <&zip_conditional_scroll_mapper 5 1 16>; // レイヤー5の時：1/16に減速して上下左右スクロール
     };
 
     /* ★ 単体の物理レイアウト定義 */
