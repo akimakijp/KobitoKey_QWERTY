@@ -45,11 +45,17 @@
 &tb_right_split {
     device = <&tb_right>;
 
-    // 💡 競合する外部ノードは一切作りません。
-    // トラックボールから送られてくる生の信号（XYデータ）に対し、
-    // レイヤー3または5が有効なときだけ、4分の一（1 4）に減速したスクロール信号へダイレクトに一発変換をかけます。
+    // 💡 1. 条件付きスクロールマッパー（&zip_scroll_conditional）を指定します。
+    // 通常時はY軸反転のみ。指定レイヤー時のみスクロールに切り替わります。
     input-processors = 
         <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_xy_scaler 1 4>,                        // 全体の解像度をまず1/4に落とす（スクロール爆速化を防ぐため）
-        <&zip_xy_to_scroll_mapper>;                  // キーマップ側のレイヤー3, 5のホールド状態と連動してスクロール化
+        <&zip_scroll_conditional>;
+
+    // 💡 2. スクロールを発動させるレイヤー（3 と 5）を指定します。
+    scroll-layers = <3 5>;
+
+    // 💡 3. スクロール時の速度をここで直接「4分の一」に減速させます。
+    // （数字を 5 や 6 に大きくするほど、さらに遅く精密なスクロールになります）
+    scroll-scale-multiplier = <1>;
+    scroll-scale-divisor = <4>;
 };
