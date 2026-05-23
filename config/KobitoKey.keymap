@@ -4,34 +4,26 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（左右ビルド完全分離・速度調整版）   */
+/* トラックボール・レイヤー連動スクロール化（左右安全・減速確定版）             */
 /* ========================================================================== */
 
-// 💡 1. 成功していたレイヤー別の上書き（親子構造）を、左手ビルドから完全に隠すために別名で新しく定義します。
-// これにより、通常時はカーソル移動、3と5のときだけスクロールへ変わり、さらに「4分の一」に減速されます。
+// 💡 左手（West）ビルド時に「未定義エラー」で落ちるのを防ぐため、
+// 右手専用のリスナー（tb_right_scroll_handler）を完全独立のクリーンな状態で定義します。
 / {
-    tb_right_scroll_scaler: tb_right_scroll_scaler {
+    tb_right_scroll_handler {
         compatible = "zmk,input-behavior-listener";
         device = <&tb_right_split>;
-        layers = <3 5>;
-        bindings = <&zip_xy_to_scroll_mapper>;
+        layers = <3 5>;                      // 👈 レイヤー3と5のときだけ発動
+        bindings = <&zip_xy_to_scroll_mapper>;// 👈 スクロールへ変換
     };
 };
 
-// 💡 2. 右手スクロールの移動量をここでコントロールします。
-// 呼び出し元のプロセッサに直接「4分の一（divisor = 4）」をネストさせることで、左手ビルドを巻き込まずに安全に減速させます。
+// 💡 ZMK公式の正しい構文で、スクロールマッパーの「大元の出力」を4分の一に減速させます。
+// レイヤーごとに子ノードを作らず、ここに直接書くのがZMKの仕様を満たす正解です。
 &zip_xy_to_scroll_mapper {
     status = "okay";
-    scroll_layer_3 {
-        layers = <3>;
-        scale-multiplier = <1>;
-        scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
-    };
-    scroll_layer_5 {
-        layers = <5>;
-        scale-multiplier = <1>;
-        scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
-    };
+    scale-multiplier = <1>;
+    scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
 };
 
 / {
@@ -91,6 +83,7 @@
             label = "FUNCTION";
             bindings = <
 &kp EXCLAMATION  &kp AT_SIGN  &kp HASH   &kp DOLLAR    &kp PERCENT        &kp CARET      &kp AMPERSAND   &kp ASTERISK     &kp LEFT_PARENTHESIS    &kp RIGHT_PARENTHESIS
+&none            &kp LSHFT    &kp LCTRL  &kp LEFT_ALT  &kp LS(SEMICOLON)  &kp SEMICOLON  &hm RALT EQUAL  &hm RCTRL SLASH  &hm RSHFT LEFT_BRACKET  &kp RIGHT_BRACKET
 &none            &none        &none      &none         &kp LS(SQT)        &kp SQT        &kp PLUS        &kp QUESTION     &kp PIPE                &kp NON_US_BACKSLASH
 &trans           &trans       &trans     &trans        &trans             &kp LS(CAPS)   &trans          &trans           &trans                  &kp ESCAPE
             >;
