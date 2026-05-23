@@ -44,67 +44,71 @@
             reg = <0>;
         };
     };
+};
 
-    /* 💡 左手リスナーの定義（statusをokayにし、右手と全く同じ減速スクロールを組み込みました） */
-    tb_left_listener: tb_left_listener {
-        compatible = "zmk,input-listener";
-        status = "okay"; // 👈 disabled から okay に変更
-        // 左手は本体直結、または左手の登録デバイス（通常空欄で機能します）
+/* ========================================================================== */
+/* 💡 左手トラックボール・リスナーの定義                                       */
+/* ========================================================================== */
+&tb_left_listener {
+    compatible = "zmk,input-listener";
+    status = "okay"; // 👈 無効化を解除して有効化
 
-        /* 通常時（ベース設定）：Y軸を反転して通常カーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+    /* 通常時（ベース設定）：Y軸を反転して通常カーソル移動 */
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
-        /* レイヤー3（Qホールド時）：1/16減速で上下左右スクロール */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
-
-        /* レイヤー5（Wホールド時）：1/16減速で上下左右スクロール */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
+    /* レイヤー3（Qホールド時）：1/16減速で上下左右スクロール */
+    scroll_l3 {
+        layers = <3>;
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_xy_scaler 1 16>,
+            <&zip_xy_to_scroll_mapper>;
     };
 
-    /* 右手リスナーの定義（前回の成功状態をキープ） */
-    tb_right_listener: tb_right_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-        device = <&tb_right_split>;
-
-        /* 1️⃣ 通常時（ベース設定）：Y軸を反転してカーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-
-        /* 2️⃣ レイヤー3（Qホールド時）：1/16に大減速してスクロール */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
-
-        /* 3️⃣ レイヤー5（Wホールド時）：1/16に大減速してスクロール */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
-        };
+    /* レイヤー5（Wホールド時）：1/16減速で上下左右スクロール */
+    scroll_l5 {
+        layers = <5>;
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_xy_scaler 1 16>,
+            <&zip_xy_to_scroll_mapper>;
     };
 };
 
+/* ========================================================================== */
+/* 💡 右手トラックボール・リスナーの定義                                       */
+/* ========================================================================== */
+&tb_right_listener {
+    compatible = "zmk,input-listener";
+    status = "okay";
+    device = <&tb_right_split>;
 
+    /* 通常時（ベース設定）：Y軸を反転してカーソル移動 */
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+    /* レイヤー3（Qホールド時）：1/16に大減速してスクロール */
+    scroll_l3 {
+        layers = <3>;
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_xy_scaler 1 16>,
+            <&zip_xy_to_scroll_mapper>;
+    };
+
+    /* レイヤー5（Wホールド時）：1/16に大減速してスクロール */
+    scroll_l5 {
+        layers = <5>;
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_xy_scaler 1 16>,
+            <&zip_xy_to_scroll_mapper>;
+    };
+};
+
+/* ========================================================================== */
+/* 💡 物理レイアウト定義                                                      */
+/* ========================================================================== */
 / {
-    /* ★ 単体の物理レイアウト定義（Studio不要の最小形） */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
@@ -114,7 +118,6 @@
         transform = <&default_transform>;
     };
 
-    /* ★ デフォルトで使うレイアウトを chosen で指す */
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
