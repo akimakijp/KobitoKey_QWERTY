@@ -45,22 +45,3 @@
     device = <&tb_right>;
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
-
-/* ========================================================================== */
-/* ZMK公式仕様に基づく、大元リスナーへのレイヤー別上書き（オーバーライド）     */
-/* ========================================================================== */
-
-&tb_right_listener {
-    // 💡 ZMKの仕様上、リスナーの中に子ノードを作ることで、特定のレイヤーのみ処理を上書きできます。
-    // レイヤー3または5の時だけ、通常移動を完全にストップし、4分の一に減速したスクロールを動かします。
-    
-    scroller_l3 {
-        layers = <3>;
-        input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
-    };
-
-    scroller_l5 {
-        layers = <5>;
-        input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
-    };
-};
