@@ -4,31 +4,28 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（ネスト＆速度調整版）            */
+/* トラックボール・レイヤー連動スクロール化（左右ビルド完全適合版）          */
 /* ========================================================================== */
 
-// 💡 1. 成功していたレイヤー別の上書き（親子構造）です
 &tb_right_listener {
     status = "okay";
     device = <&tb_right_split>;
 
+    // 💡 右手リスナーの内部に直接「スクロール変換＋速度調整（4分の一に減速）」をネストします。
+    // この書き方なら左手（West）のビルド時にエラーにならず、右手のスクロール量だけを綺麗に落とせます。
     scroll_layer_3 {
         layers = <3>;
         input-processors = <&zip_xy_to_scroll_mapper>;
+        scale-multiplier = <1>;
+        scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
     };
 
     scroll_layer_5 {
         layers = <5>;
         input-processors = <&zip_xy_to_scroll_mapper>;
+        scale-multiplier = <1>;
+        scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
     };
-};
-
-// 💡 2. 右手スクロールの移動量をここでコントロールします（最外周に配置）
-// 出力を「4分の一（divisor = 4）」に減速させて制御しやすくします
-&zip_xy_to_scroll_mapper {
-    status = "okay";
-    scale-multiplier = <1>;
-    scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
 };
 
 / {
