@@ -41,15 +41,26 @@
     };
 };
 
-/* 右手トラックボールの設定 */
 &tb_right_split {
     device = <&tb_right>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+};
 
-    // 💡 ZMKPointing公式の正規条件マクロ（&zip_conditional_scaler_to_scroll_mapper）を使用します。
-    // 通常時は通常通りY軸反転のみ。
-    // レイヤー3が有効な時、およびレイヤー5が有効な時だけ、入力を「4分の一（1 4）」に落としたスクロール信号に変換します。
-    input-processors = 
-        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_conditional_scaler_to_scroll_mapper 3 1 4>, // レイヤー3の時、1/4の速度でスクロール
-        <&zip_conditional_scaler_to_scroll_mapper 5 1 4>; // レイヤー5の時、1/4の速度でスクロール
+/* ========================================================================== */
+/* ZMK公式仕様に基づく、大元リスナーへのレイヤー別上書き（オーバーライド）     */
+/* ========================================================================== */
+
+&tb_right_listener {
+    // 💡 ZMKの仕様上、リスナーの中に子ノードを作ることで、特定のレイヤーのみ処理を上書きできます。
+    // レイヤー3または5の時だけ、通常移動を完全にストップし、4分の一に減速したスクロールを動かします。
+    
+    scroller_l3 {
+        layers = <3>;
+        input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
+    };
+
+    scroller_l5 {
+        layers = <5>;
+        input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
+    };
 };
