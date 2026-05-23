@@ -45,10 +45,10 @@
 &tb_right_split {
     device = <&tb_right>;
 
-    // 💡 確実に存在する標準マクロのみを使用。
-    // 通常はY軸を反転。レイヤー3または5の時だけ、出力をダイレクトに「4分の一（1 4）」に減速します。
+    // 💡 正しいZMK公式マクロ名（&zip_conditional_scaler）に修正しました。
+    // 通常はY軸を反転。レイヤー3または5の時だけ、トラックボールの速度を4分の一（1 4）に減速します。
     input-processors = 
         <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_xy_scaler_conditional 3 1 4>, // レイヤー3のとき速度を 1/4 に
-        <&zip_xy_scaler_conditional 5 1 4>; // レイヤー5のとき速度を 1/4 に
+        <&zip_conditional_scaler 3 1 4>, // レイヤー3のとき速度を 1/4 に減速
+        <&zip_conditional_scaler 5 1 4>; // レイヤー5のとき速度を 1/4 に減速
 };
