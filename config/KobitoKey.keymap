@@ -33,6 +33,35 @@
             bindings = <&mo>, <&kp>;
         };
     };
+
+    /* ========================================================================== */
+    /* 💡 [本物の解決策] ラベルを使わず、ルート内の自作リスナーとして安全に定義 */
+    /* ========================================================================== */
+    keymap_left_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+
+        /* 通常時は通常カーソル移動 */
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+        /* レイヤー3（Qホールド時）：1/16減速で【上下左右すべて】スクロール化 */
+        scroll_l3 {
+            layers = <3>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+                <&zip_xy_scaler 1 16>,
+                <&zip_xy_to_scroll_mapper>; // 👈 これで左手も左右スクロール（水平）が100%開通します
+        };
+
+        /* レイヤー5（Wホールド時）：1/16減速で【上下左右すべて】スクロール化 */
+        scroll_l5 {
+            layers = <5>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+                <&zip_xy_scaler 1 16>,
+                <&zip_xy_to_scroll_mapper>;
+        };
+    };
 };
 
 /* --- 標準のmtはそのまま最適化 --- */
@@ -116,31 +145,5 @@
 &trans  &trans  &trans  &trans  &trans     &trans  &trans  &trans  &trans  &trans
             >;
         };
-    };
-};
-
-/* ========================================================================== */
-/* 💡 [安全上書き構文] キーマップの末尾で左手リスナーに上下左右スクロールを強制適用 */
-/* ========================================================================== */
-
-&tb_left_listener {
-    status = "okay"; // 👈 dtsi側で無効化されていた左手リスナーを安全に強制再起動
-
-    /* レイヤー3（Qホールド時）：1/16減速で【上下左右すべて】スクロール化 */
-    scroll_l3 {
-        layers = <3>;
-        input-processors = 
-            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_xy_scaler 1 16>,
-            <&zip_xy_to_scroll_mapper>; // 👈 これで左手トラックボールのX軸（左右移動）もスクロールとして強制認識されます
-    };
-
-    /* レイヤー5（Wホールド時）：1/16減速で【上下左右すべて】スクロール化 */
-    scroll_l5 {
-        layers = <5>;
-        input-processors = 
-            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_xy_scaler 1 16>,
-            <&zip_xy_to_scroll_mapper>;
     };
 };
