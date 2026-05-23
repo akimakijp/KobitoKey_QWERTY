@@ -41,41 +41,15 @@
     };
 };
 
+/* 右手トラックボールの設定 */
 &tb_right_split {
     device = <&tb_right>;
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-};
 
-/* ========================================================================== */
-/* 大元のメインリスナーを直接ハックして競合を完全排除（最終解決版）           */
-/* ========================================================================== */
-
-// 💡 1. 左手ビルド時にコンパイラが「tb_right_listenerがない」と怒るのを防ぐダミーラベルです。
-// 右手 overlay の中でルート直下に定義することで、左手ビルドの干渉を完璧に防ぎます。
-/ {
-    tb_right_listener: tb_right_listener { };
-};
-
-// 💡 2. 大元の通常移動リスナーを直接上書きし、レイヤー3と5の時だけスクロールに完全変換させます。
-// 新しい別リスナーを作らないため、通常移動に命令を消されることが100%なくなります。
-&tb_right_listener {
-    status = "okay";
-
-    // レイヤー3（Q）ホールド時：4分の一の速度でスクロール
-    scroll_layer_3 {
-        layers = <3>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
-    };
-
-    // レイヤー5（W）ホールド時：4分の一の速度でスクロール
-    scroll_layer_5 {
-        layers = <5>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
-    };
-};
-
-// 💡 3. スクロールマッパー自体の出力をここで「4分の一」に一括減速します。
-&zip_xy_to_scroll_mapper {
-    scale-multiplier = <1>;
-    scale-divisor = <4>; 
+    // 💡 競合する外部ノードは一切作りません。
+    // トラックボールから送られてくる生の信号（XYデータ）に対し、
+    // レイヤー3または5が有効なときだけ、4分の一（1 4）に減速したスクロール信号へダイレクトに一発変換をかけます。
+    input-processors = 
+        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+        <&zip_xy_scaler 1 4>,                        // 全体の解像度をまず1/4に落とす（スクロール爆速化を防ぐため）
+        <&zip_xy_to_scroll_mapper>;                  // キーマップ側のレイヤー3, 5のホールド状態と連動してスクロール化
 };
