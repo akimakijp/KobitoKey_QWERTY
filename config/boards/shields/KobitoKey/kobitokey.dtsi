@@ -45,21 +45,6 @@
         };
     };
 
-    /* 💡 左手リスナー：余計なコードをすべて排除し、一番最初に100%動いていたベース状態に固定 */
-    tb_left_listener: tb_left_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-    };
-
-    /* 💡 右手リスナー：余計なコードをすべて排除し、一番最初に100%動いていたベース状態に固定 */
-    tb_right_listener: tb_right_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-        device = <&tb_right_split>;
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-    };
-
     /* ★ 単体の物理レイアウト定義 */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
@@ -71,5 +56,44 @@
     /* ★ デフォルトで使うレイアウトを chosen で指す */
     chosen {
         zmk,physical-layout = &physical_layout0;
+    };
+};
+
+/* ========================================================================== */
+/* 💡 既存のシステムノードに対して、外側から安全にスクロールを流し込む（参照構文） */
+/* ========================================================================== */
+
+&tb_left_listener {
+    status = "okay";
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+    /* レイヤー3（Q）ホールド時：1/16減速＋上下左右スクロール */
+    scroll_l3 {
+        layers = <3>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
+    };
+
+    /* レイヤー5（W）ホールド時：1/16減速＋上下左右スクロール */
+    scroll_l5 {
+        layers = <5>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
+    };
+};
+
+&tb_right_listener {
+    status = "okay";
+    device = <&tb_right_split>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+    /* レイヤー3（Q）ホールド時：1/16減速＋上下左右スクロール */
+    scroll_l3 {
+        layers = <3>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
+    };
+
+    /* レイヤー5（W）ホールド時：1/16減速＋上下左右スクロール */
+    scroll_l5 {
+        layers = <5>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
     };
 };
