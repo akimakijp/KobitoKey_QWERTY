@@ -51,25 +51,28 @@
         status = "disabled";
     };
 
-    /* 💡 compatible をレイヤー制御に対応した正規の "zmk,input-behavior-listener" に修正しました */
+    /* 右手リスナー（各サブノードにデバイスの紐付けを徹底定義） */
     tb_right_listener: tb_right_listener {
-        compatible = "zmk,input-behavior-listener"; // 👈 ここを zmk,input-listener から変更！
+        compatible = "zmk,input-behavior-listener";
         status = "okay";
         device = <&tb_right_split>;
 
         // 1️⃣ 通常カーソル移動（レイヤー3と5以外の時にカーソルを動かす）
         normal_move {
+            device = <&tb_right_split>; // 👈 デバイスを明記
             layers = <0 1 2 4 6>; 
         };
 
         // 2️⃣ レイヤー3（Q）ホールド時：4分の一に減速してスクロール
         scroll_layer_3 {
+            device = <&tb_right_split>; // 👈 デバイスを明記
             layers = <3>;
             input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
         };
 
         // 3️⃣ レイヤー5（W）ホールド時：4分の一に減速してスクロール
         scroll_layer_5 {
+            device = <&tb_right_split>; // 👈 デバイスを明記
             layers = <5>;
             input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll_mapper>;
         };
