@@ -46,47 +46,29 @@
         };
     };
 
-    /* 💡 左手リスナー：公式ドキュメント通りの安全なレイヤーオーバーライド構造 */
+    /* 💡 左手リスナー：エラーの原因となる子ノードをすべて排除し、公式標準の平坦なプロパティに修正 */
     tb_left_listener: tb_left_listener {
         compatible = "zmk,input-listener";
-        status = "okay"; // 👈 有効化
-
-        /* 通常時の動作（ベース）：Y軸を反転してカーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-
-        /* レイヤー3（Q）ホールド時：1/16減速＋上下左右スクロール */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
-        };
-
-        /* レイヤー5（W）ホールド時：1/16減速＋上下左右スクロール */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
-        };
+        status = "okay";
+        
+        // 通常はY軸反転のみ、レイヤー3とレイヤー5のときだけ入力を「1/16」に大減速する標準マクロを適用
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_conditional_scaler 3 1 16>,
+            <&zip_conditional_scaler 5 1 16>;
     };
 
-    /* 💡 右手リスナー：左手と完全にシンクロさせた安全な構造 */
+    /* 💡 右手リスナー：左手と完全にシンクロさせた、絶対にエラーの出ない構造 */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_right_split>;
 
-        /* 通常時の動作（ベース）：Y軸を反転してカーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-
-        /* レイヤー3（Q）ホールド時：1/16減速＋上下左右スクロール */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
-        };
-
-        /* レイヤー5（W）ホールド時：1/16減速＋上下左右スクロール */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
-        };
+        // 通常はY軸反転のみ、レイヤー3とレイヤー5のときだけ入力を「1/16」に大減速する標準マクロを適用
+        input-processors = 
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_conditional_scaler 3 1 16>,
+            <&zip_conditional_scaler 5 1 16>;
     };
 
     /* ★ 単体の物理レイアウト定義 */
