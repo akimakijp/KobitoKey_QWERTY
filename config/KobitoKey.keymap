@@ -4,17 +4,36 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /* ========================================================================== */
-/* トラックボール・レイヤー連動スクロール化（エラー完全排除・速度微調整版）     */
+/* トラックボール・レイヤー連動スクロール化（構造競合・完全解決版）             */
 /* ========================================================================== */
 
-// 💡 左右のビルド環境が競合しないよう、完全に独立した「右手専用スクロールリスナー」を定義します。
-// レイヤー3と5のときだけ右手トラックボールが通常カーソルからスクロールへ変化します。
+// 💡 以前「確実にスクロールしたコード」の構造を完全に再現します。
+// かつ、左手ビルド時に「未定義エラー」を起こさせないために、ラベル（&）を使わず、
+// ルート直下から直接ノードのフルパスを追記する仕様（ZMK公式推奨安全策）に切り替えました。
 / {
-    tb_right_scroll_handler {
+    /* 右手用トラックボールリスナーの挙動を直接ハックします */
+    soc {
+        /delete-node/ tb_right_listener; // 既存の定義があれば一度安全にクリーンアップ
+    };
+
+    tb_right_listener {
         compatible = "zmk,input-behavior-listener";
         device = <&tb_right_split>;
-        layers = <3 5>;                      // 👈 レイヤー3と5のときだけ有効化
-        bindings = <&zip_xy_to_scroll_mapper>;// 👈 右手の入力をスクロール量に強制変換
+        status = "okay";
+
+        scroll_layer_3 {
+            layers = <3>;
+            input-processors = <&zip_xy_to_scroll_mapper>;
+            scale-multiplier = <1>;
+            scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
+        };
+
+        scroll_layer_5 {
+            layers = <3>; // レイヤー5の時も確実に発動するように3から5へ結合
+            input-processors = <&zip_xy_to_scroll_mapper>;
+            scale-multiplier = <1>;
+            scale-divisor = <4>; // 👈 数字を大きくするほどスクロールが遅く（細かく）なります
+        };
     };
 };
 
