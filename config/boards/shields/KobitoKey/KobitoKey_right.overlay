@@ -45,11 +45,10 @@
 &tb_right_split {
     device = <&tb_right>;
 
-    // 💡 大元の入力プロセッサを直接拡張します。
-    // 通常はY軸反転のみ。レイヤー3または5が押されている時だけ、
-    // 自動的に「4分の一に減速されたスクロール信号」へと直接割り込み変換をかけます。
+    // 💡 確実に存在する標準マクロのみを使用。
+    // 通常はY軸を反転。レイヤー3または5の時だけ、出力をダイレクトに「4分の一（1 4）」に減速します。
     input-processors = 
         <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_xy_to_scroll_mapper_conditional 3 1 4>, // レヤー3の時、4分の一でスクロール
-        <&zip_xy_to_scroll_mapper_conditional 5 1 4>; // レヤー5の時、4分の一でスクロール
+        <&zip_xy_scaler_conditional 3 1 4>, // レイヤー3のとき速度を 1/4 に
+        <&zip_xy_scaler_conditional 5 1 4>; // レイヤー5のとき速度を 1/4 に
 };
