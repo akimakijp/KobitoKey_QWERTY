@@ -32,6 +32,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         
+        /* 以前のirq-gpiosに戻す */
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <600>;
         
@@ -50,15 +51,15 @@
     };
 
     aliases {
-        led-red = &led_red_r;
-        led-green = &led_green_r;
-        led-blue = &led_blue_r;
+        led-red = &red_led;
+        led-green = &green_led;
+        led-blue = &blue_led;
     };
 
-    led_dummy: led_dummy {
+    led_strip: gpio_leds {
         compatible = "gpio-leds";
-        led_red_r: led_red { gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; };
-        led_green_r: led_green { gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>; };
-        led_blue_r: led_blue { gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>; };
+        red_led: red_led { gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; };
+        green_led: green_led { gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>; };
+        blue_led: blue_led { gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>; };
     };
 };
