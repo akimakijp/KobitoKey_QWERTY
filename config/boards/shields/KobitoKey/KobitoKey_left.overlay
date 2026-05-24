@@ -37,7 +37,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <200>; /* センサー感度 */
+        cpi = <200>;
 
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
@@ -59,43 +59,40 @@
         status = "okay";
         rotation-angle = <24>;
     };
-};
 
-&tb_left_listener {
-    status = "okay";
-    device = <&tb_left>;
+    /* リスナーをここで明示的に定義してエラーを解消します */
+    left_scroll_listener: left_scroll_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+        device = <&tb_left>;
 
-    input-processors =
+        input-processors =
             <&sensor_rotation_left>,
             <&zip_x_scaler 0 1>,
             <&zip_y_scaler 1 15>,
             <&zip_xy_to_scroll_mapper>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
-};
+    };
 
-/ {
-  /omit-if-no-ref/ zip_temp_layer: zip_temp_layer {
-    compatible = "zmk,input-processor-temp-layer";
-    #input-processor-cells = <2>;
-    require-prior-idle-ms = <350>;
-  };
-};
+    /* 右側用のリスナー定義 */
+    tb_right_listener: tb_right_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+        /* 右手側は split 入力に接続 */
+        device = <&tb_right_split>;
+        input-processors = <&sensor_rotation_right>;
+    };
 
-/* ========================================================================== */
-/*                       右トラックボール：基本設定（クリーン）                 */
-/* ========================================================================== */
-
-&tb_right_listener {
-    status = "okay";
-    input-processors = <&sensor_rotation_right>;
-};
-
-&zip_temp_layer {
-    excluded-positions = <
-        6 7 8 9 10
-        16 17 18 19 20
-        26 27 28 29 30
-        36 37 38 39 40
-    >;
+    zip_temp_layer: zip_temp_layer {
+        compatible = "zmk,input-processor-temp-layer";
+        #input-processor-cells = <2>;
+        require-prior-idle-ms = <350>;
+        excluded-positions = <
+            6 7 8 9 10
+            16 17 18 19 20
+            26 27 28 29 30
+            36 37 38 39 40
+        >;
+    };
 };
