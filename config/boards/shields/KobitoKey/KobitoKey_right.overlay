@@ -41,11 +41,10 @@
 };
 
 / {
-    /* 直接ルート直下に配置し、バス構造を避ける */
+    /* reg = <0> を追加しました */
     tb_right_split: split_input {
         compatible = "zmk,input-split";
-        /* regを削除してもエラーになる場合は、コメントアウトした以下の行を試してください */
-        // reg = <0>; 
+        reg = <0>;
     };
 
     tb_right_listener: tb_right_listener {
