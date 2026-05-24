@@ -79,3 +79,16 @@
         >;
     };
 };
+/ {
+    aliases {
+        led-red = &led_red_dummy;
+    };
+
+    led_red_dummy: led_red_dummy {
+        compatible = "gpio-leds";
+        /* Xiao BLEのピン適当なものを指定してください（今回はダミーなので何でもOKです） */
+        red_led: red_led {
+            gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; 
+        };
+    };
+};
