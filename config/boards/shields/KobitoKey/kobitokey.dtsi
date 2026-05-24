@@ -3,13 +3,13 @@
 #include "KobitoKey-layouts.dtsi"
 
 /* ========================================================================== */
-/* 💡 [LED完全生存] 実在するノードパスで直接エイリアスを定義し、エラーを完全消滅 */
+/* 💡 [LED完全生存] Xiao BLEに実在する本物のLEDノード名を1文字違わず直結！         */
 /* ========================================================================== */
 / {
     aliases {
-        led-red = &{/leds/led_0};   /* Xiao BLEに実在する本物の赤LEDパス */
-        led-green = &{/leds/led_1}; /* Xiao BLEに実在する本物の緑LEDパス */
-        led-blue = &{/leds/led_2};  /* Xiao BLEに実在する本物の青LEDパス */
+        led-red = &led2_red;     /* Xiao BLE基板上の本物の赤LED */
+        led-green = &led0_green; /* Xiao BLE基板上の本物の緑LED */
+        led-blue = &led1_blue;   /* Xiao BLE基板上の本物の青LED */
     };
 };
 
