@@ -3,24 +3,24 @@
 #include "KobitoKey-layouts.dtsi"
 
 / {
-    /* 💡 LEDモジュールのビルドエラー（led_redがない）を完全に回避する設定 */
+    /* 💡 ログにあった widget.c の static assertion（led_redがないエラー）を完全に消し去る設定 */
     aliases {
         led-red = &led_red_node;
         led-green = &led_green_node;
         led-blue = &led_blue_node;
     };
 
-    /* 💡 エイリアスに紐付けるためのダミーのLEDノードを定義 */
+    /* 💡 Xiao BLEに安全に存在する本物のGPIO（D0, D4, D5）をダミーとして割り当て */
     leds {
         compatible = "gpio-leds";
         led_red_node: led_0 {
-            gpios = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
+            gpios = <&xiao_d 0 GPIO_ACTIVE_LOW>;
         };
         led_green_node: led_1 {
-            gpios = <&xiao_d 4 GPIO_ACTIVE_HIGH>;
+            gpios = <&xiao_d 4 GPIO_ACTIVE_LOW>;
         };
         led_blue_node: led_2 {
-            gpios = <&xiao_d 5 GPIO_ACTIVE_HIGH>;
+            gpios = <&xiao_d 5 GPIO_ACTIVE_LOW>;
         };
     };
 
@@ -84,25 +84,25 @@
         };
     };
 
-    /* 💡 左手専用リスナー：デバイスの競合を防ぐ正しいデバイス指定を組み込み */
+    /* 💡 左手専用リスナー：大元ノード 'trackball' を監視対象に指定 */
     left_scroll_listener: left_scroll_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&trackball>; /* 👈 ログにいた大元ノード 'trackball' を安全に指定 */
+        device = <&trackball>;
 
         /* 通常時はY軸を反転して通常カーソル移動 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
-        /* レイヤー3（Qホールド時）：1/16減速で左手も【上下左右すべて】の動きをスクロール化 */
+        /* レイヤー3（Qホールド時）：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l3 {
             layers = <3>;
             input-processors = 
                 <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, 
                 <&zip_xy_scaler 1 16>, 
-                <&zip_xy_to_scroll_mapper>; /* 👈 これで左手も左右スクロール（水平）が100%開通します */
+                <&zip_xy_to_scroll_mapper>; /* 👈 これで左手も左右スクロール（水平）が開通します */
         };
 
-        /* レイヤー5（Wホールド時）：1/16減速で左手も【上下左右すべて】の動きをスクロール化 */
+        /* レイヤー5（Wホールド時）：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l5 {
             layers = <5>;
             input-processors = 
