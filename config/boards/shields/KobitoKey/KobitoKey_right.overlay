@@ -2,7 +2,6 @@
 #include "kobitokey.dtsi"
 #include <input/processors.dtsi>
 
-/* 列オフセット */
 &default_transform { col-offset = <5>; };
 
 &pinctrl {
@@ -42,27 +41,34 @@
 };
 
 / {
-    /* 修正: 直接 reg を持たせることでバインディングエラーを回避 */
-    tb_right_split: split_inputs {
+    /* ノード名を明示的に指定して conflict を避けます */
+    my_split_inputs: my_split_inputs {
         compatible = "zmk,input-split";
-        reg = <0>;
     };
 
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_right_split>;
+        device = <&tb_right>;
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
     aliases {
         led-red = &led_red_dummy;
+        led-green = &led_green_dummy;
+        led-blue = &led_blue_dummy;
     };
 
     led_red_dummy: led_red_dummy {
         compatible = "gpio-leds";
-        red_led: red_led {
-            gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; 
-        };
+        red_led: red_led { gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; };
+    };
+    led_green_dummy: led_green_dummy {
+        compatible = "gpio-leds";
+        green_led: green_led { gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>; };
+    };
+    led_blue_dummy: led_blue_dummy {
+        compatible = "gpio-leds";
+        blue_led: blue_led { gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>; };
     };
 };
