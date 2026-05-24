@@ -3,13 +3,13 @@
 #include "KobitoKey-layouts.dtsi"
 
 /* ========================================================================== */
-/* 💡 [LED完全生存] 外部モジュール（RGBLED_WIDGET）のエラーを完全に消し去る直結定義 */
+/* 💡 [LED完全生存] 実在するノードパスで直接エイリアスを定義し、エラーを完全消滅 */
 /* ========================================================================== */
 / {
     aliases {
-        led-red = &led0;   /* Seeeduino Xiao BLE基板上の本物の赤LED */
-        led-green = &led1; /* Seeeduino Xiao BLE基板上の本物の緑LED */
-        led-blue = &led2;  /* Seeeduino Xiao BLE基板上の本物の青LED */
+        led-red = &{/leds/led_0};   /* Xiao BLEに実在する本物の赤LEDパス */
+        led-green = &{/leds/led_1}; /* Xiao BLEに実在する本物の緑LEDパス */
+        led-blue = &{/leds/led_2};  /* Xiao BLEに実在する本物の青LEDパス */
     };
 };
 
