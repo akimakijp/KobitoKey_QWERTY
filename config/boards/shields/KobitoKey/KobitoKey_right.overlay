@@ -42,11 +42,12 @@
 };
 
 / {
-    /* 分割キーボード用のバス定義：アドレス/サイズセルを明記 */
+    /* 親ノードに reg を追加し、address-cells/size-cells を適合 */
     split_inputs: split_inputs {
         compatible = "zmk,input-split";
         #address-cells = <1>;
         #size-cells = <0>;
+        reg = <0>;
 
         tb_right_split: tb_right_split@0 {
             compatible = "zmk,input-split";
@@ -54,7 +55,6 @@
         };
     };
 
-    /* 右手用リスナー定義 */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
