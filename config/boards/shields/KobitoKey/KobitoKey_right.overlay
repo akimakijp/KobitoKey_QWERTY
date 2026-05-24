@@ -41,7 +41,6 @@
 };
 
 / {
-    /* 左手用の設定は完全に削除しました */
     split_bus {
         compatible = "simple-bus";
         #address-cells = <1>;
@@ -50,6 +49,8 @@
         tb_right_split: split_input@0 {
             compatible = "zmk,input-split";
             reg = <0>;
+            /* 👈 ここに input プロパティを追加しました */
+            input = <&tb_right>;
         };
     };
 
