@@ -2,6 +2,17 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include "KobitoKey-layouts.dtsi"
 
+/* ========================================================================== */
+/* 💡 [LED完全生存] モジュールが要求するエイリアスを本物のノード名で確定定義！ */
+/* ========================================================================== */
+/ {
+    aliases {
+        led-red = &led2_red;     /* Seeeduino Xiao BLE 本物の赤LEDノード */
+        led-green = &led0_green; /* Seeeduino Xiao BLE 本物の緑LEDノード */
+        led-blue = &led1_blue;   /* Seeeduino Xiao BLE 本物の青LEDノード */
+    };
+};
+
 / {
     /* 行列スキャン：rowは左右共通、colは左右で分ける */
     kscan0: kscan0 {
@@ -44,7 +55,7 @@
         };
     };
 
-    /* 右手リスナー：完璧な上下左右スクロール設定 */
+    /* 💡 右手リスナー：完璧な上下左右スクロール設定 */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
@@ -63,14 +74,16 @@
         };
     };
 
-    /* 左手専用リスナー：大元ノード 'trackball' を安全に指定 */
+    /* 💡 左手専用リスナー：大元ノード 'trackball' を監視対象に指定 */
     left_scroll_listener: left_scroll_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball>;
 
+        /* 通常時はY軸を反転して通常カーソル移動 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
+        /* レイヤー3：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l3 {
             layers = <3>;
             input-processors = 
@@ -79,6 +92,7 @@
                 <&zip_xy_to_scroll_mapper>;
         };
 
+        /* レイヤー5：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l5 {
             layers = <5>;
             input-processors = 
