@@ -41,7 +41,21 @@
     };
 };
 
-&tb_right_split {
-    device = <&tb_right>;
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+/ {
+    /* 分割キーボードの右側として、split input ノードを明示的に定義 */
+    split_inputs {
+        compatible = "zmk,input-split";
+        tb_right_split: tb_right_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+    };
+
+    /* リスナーをこの階層で定義し、tb_right_split を参照 */
+    tb_right_listener: tb_right_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+        device = <&tb_right_split>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
 };
