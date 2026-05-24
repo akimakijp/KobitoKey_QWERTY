@@ -2,8 +2,35 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include "KobitoKey-layouts.dtsi"
 
+/* ========================================================================== */
+/* 💡 [LED完全生存] 外部モジュールのBUILD_ASSERTを正面から100%黙らせる定義       */
+/* ========================================================================== */
 / {
-    /* 行列スキャン：rowは左右共通、colは左右で分ける */
+    aliases {
+        led-red = &absolute_hardware_led_red;
+        led-green = &absolute_hardware_led_green;
+        led-blue = &absolute_hardware_led_blue;
+    };
+
+    /* Seeeduino Xiao BLE の基板に直結されている本物のGPIOピン（26, 30, 6）を直接制御 */
+    leds {
+        compatible = "gpio-leds";
+        absolute_hardware_led_red: led_r {
+            gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
+        };
+        absolute_hardware_led_green: led_g {
+            gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
+        };
+        absolute_hardware_led_blue: led_b {
+            gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
+        };
+    };
+};
+
+/* ========================================================================== */
+/* キーボード基本定義（行列スキャン ＆ 物理レイアウト設定）                      */
+/* ========================================================================== */
+/ {
     kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
@@ -20,7 +47,6 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH> ; 
     };
 
-    /* 左右合体で 4行×10列 */
     default_transform: keymap_transform0 {
         compatible = "zmk,matrix-transform";
         rows = <4>;
@@ -33,7 +59,6 @@
         >;
     };
 
-    /* 右側トラックボールを split 入力として扱う */
     split_inputs {
         #address-cells = <1>;
         #size-cells = <0>;
@@ -88,7 +113,6 @@
         };
     };
 
-    /* ★ 単体の物理レイアウト定義 */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
@@ -96,7 +120,6 @@
         transform = <&default_transform>;
     };
 
-    /* ★ デフォルトレイアウト指定 */
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
