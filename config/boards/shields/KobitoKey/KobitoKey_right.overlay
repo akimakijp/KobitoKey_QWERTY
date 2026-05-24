@@ -49,8 +49,8 @@
         tb_right_split: split_input@0 {
             compatible = "zmk,input-split";
             reg = <0>;
-            /* 👈 ここに input プロパティを追加しました */
-            input = <&tb_right>;
+            /* input ではなく device に修正 */
+            device = <&tb_right>;
         };
     };
 
