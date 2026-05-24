@@ -2,34 +2,29 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include "KobitoKey-layouts.dtsi"
 
-/* ========================================================================== */
-/* 💡 [もらい事故対策] 外部モジュール（widget.c）のLEDチェックを強制突破する定義 */
-/* ========================================================================== */
 / {
+    /* 💡 外部モジュールが1文字違わず要求している「ハイフン名」でエイリアスを確定 */
     aliases {
-        led-red = &dummy_led_red;
-        led-green = &dummy_led_green;
-        led-blue = &dummy_led_blue;
+        led-red = &led_r;
+        led-green = &led_g;
+        led-blue = &led_b;
     };
 
-    dummy_leds {
+    /* エイリアスが指し示す先となるダミーの物理LEDノード */
+    leds {
         compatible = "gpio-leds";
-        dummy_led_red: led_r {
+        led_r: led_0 {
             gpios = <&xiao_d 0 GPIO_ACTIVE_LOW>;
         };
-        dummy_led_green: led_g {
+        led_g: led_1 {
             gpios = <&xiao_d 4 GPIO_ACTIVE_LOW>;
         };
-        dummy_led_blue: led_b {
+        led_b: led_2 {
             gpios = <&xiao_d 5 GPIO_ACTIVE_LOW>;
         };
     };
-};
 
-/* ========================================================================== */
-/* キーボード基本定義（行列スキャン ＆ 物理レイアウト設定）                      */
-/* ========================================================================== */
-/ {
+    /* 行列スキャン：rowは左右共通、colは左右で分ける */
     kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
@@ -46,6 +41,7 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH> ; 
     };
 
+    /* 左右合体で 4行×10列 */
     default_transform: keymap_transform0 {
         compatible = "zmk,matrix-transform";
         rows = <4>;
@@ -58,6 +54,7 @@
         >;
     };
 
+    /* 右側トラックボールを split 入力として扱う */
     split_inputs {
         #address-cells = <1>;
         #size-cells = <0>;
@@ -87,25 +84,35 @@
         };
     };
 
-    /* 💡 左手専用リスナー：ログ内の大元ノード「trackball」を正確に紐付け */
+    /* 💡 左手専用リスナー：大元ノード 'trackball' を監視対象に指定 */
     left_scroll_listener: left_scroll_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball>;
 
+        /* 通常時はY軸を反転して通常カーソル移動 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
+        /* レイヤー3（Qホールド時）：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l3 {
             layers = <3>;
-            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, 
+                <&zip_xy_scaler 1 16>, 
+                <&zip_xy_to_scroll_mapper>;
         };
 
+        /* レイヤー5（Wホールド時）：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l5 {
             layers = <5>;
-            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
+            input-processors = 
+                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, 
+                <&zip_xy_scaler 1 16>, 
+                <&zip_xy_to_scroll_mapper>;
         };
     };
 
+    /* ★ 単体の物理レイアウト定義 */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
@@ -113,6 +120,7 @@
         transform = <&default_transform>;
     };
 
+    /* ★ デフォルトレイアウト指定 */
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
