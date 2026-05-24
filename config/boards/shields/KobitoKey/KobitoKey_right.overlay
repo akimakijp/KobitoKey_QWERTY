@@ -41,7 +41,7 @@
 };
 
 / {
-    /* 専用のバスノードを作り、ここでアドレスとサイズを管理します */
+    /* 左手用の設定は完全に削除しました */
     split_bus {
         compatible = "simple-bus";
         #address-cells = <1>;
