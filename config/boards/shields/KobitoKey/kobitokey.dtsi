@@ -3,14 +3,14 @@
 #include "KobitoKey-layouts.dtsi"
 
 / {
-    /* 💡 ログにあった widget.c の static assertion（led_redがないエラー）を完全に消し去る設定 */
+    /* 💡 外部モジュールが要求するエイリアス名を、アンダースコア（_）で正しく定義 */
     aliases {
-        led-red = &led_red_node;
-        led-green = &led_green_node;
-        led-blue = &led_blue_node;
+        led_red = &led_red_node;
+        led_green = &led_green_node;
+        led_blue = &led_blue_node;
     };
 
-    /* 💡 Xiao BLEに安全に存在する本物のGPIO（D0, D4, D5）をダミーとして割り当て */
+    /* エリアスに紐付けるためのダミーのLEDノード */
     leds {
         compatible = "gpio-leds";
         led_red_node: led_0 {
@@ -65,7 +65,7 @@
         };
     };
 
-    /* 💡 右手リスナー：大成功していた完璧な上下左右スクロール設定（レイヤー3, 5連動） */
+    /* 💡 右手リスナー：大成功していた完璧な上下左右スクロール設定 */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
@@ -99,7 +99,7 @@
             input-processors = 
                 <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, 
                 <&zip_xy_scaler 1 16>, 
-                <&zip_xy_to_scroll_mapper>; /* 👈 これで左手も左右スクロール（水平）が開通します */
+                <&zip_xy_to_scroll_mapper>;
         };
 
         /* レイヤー5（Wホールド時）：1/16減速で【上下左右すべて】の動きをスクロール化 */
