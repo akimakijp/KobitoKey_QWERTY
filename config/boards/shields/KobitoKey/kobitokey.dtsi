@@ -3,25 +3,11 @@
 #include "KobitoKey-layouts.dtsi"
 
 / {
-    /* 💡 外部モジュールが1文字違わず要求している「ハイフン名」でエイリアスを確定 */
+    /* 💡 Xiao BLEの基板に最初からある本物のLEDノード（&led0等）をエイリアスに直結 */
     aliases {
-        led-red = &led_r;
-        led-green = &led_g;
-        led-blue = &led_b;
-    };
-
-    /* エイリアスが指し示す先となるダミーの物理LEDノード */
-    leds {
-        compatible = "gpio-leds";
-        led_r: led_0 {
-            gpios = <&xiao_d 0 GPIO_ACTIVE_LOW>;
-        };
-        led_g: led_1 {
-            gpios = <&xiao_d 4 GPIO_ACTIVE_LOW>;
-        };
-        led_b: led_2 {
-            gpios = <&xiao_d 5 GPIO_ACTIVE_LOW>;
-        };
+        led-red = &led0;
+        led-green = &led1;
+        led-blue = &led2;
     };
 
     /* 行列スキャン：rowは左右共通、colは左右で分ける */
