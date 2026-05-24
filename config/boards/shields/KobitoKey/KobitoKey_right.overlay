@@ -31,6 +31,8 @@
         compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
+        
+        /* 💡 以前の記述に戻します */
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <600>;
         
@@ -41,23 +43,15 @@
 };
 
 / {
-    split_bus {
-        compatible = "simple-bus";
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        tb_right_split: split_input@0 {
-            compatible = "zmk,input-split";
-            reg = <0>;
-            /* input ではなく device に修正 */
-            device = <&tb_right>;
-        };
-    };
+    /* 💡 エラーの原因だった input-split 関連をすべて削除しました */
 
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_right_split>;
+        
+        /* 💡 直接 tb_right デバイスを指定します */
+        device = <&tb_right>;
+        
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
