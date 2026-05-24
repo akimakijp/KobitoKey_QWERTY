@@ -3,14 +3,8 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
-/* ========================================================================== */
-/* クリーンキーマップ ＆ LT暴発防止（HM共有設定化）                             */
-/* ========================================================================== */
-
 / {
     behaviors {
-        // ホームポジション・モディファイア（元々の設定）
-
         hm: home_row_mods {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -21,45 +15,14 @@
             bindings = <&kp>, <&kp>;
         };
 
-        // 💡 LT（レイヤー・タップ）の挙動を HM と完全に同じ挙動・タイムアウトに統一
-
         custom_lt: custom_layer_taps {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            tapping-term-ms = <250>;      // HMと同じ250msに統一
-            quick-tap-ms = <200>;         // 連続タップ時の挙動を安定化
-            require-prior-idle-ms = <125>;// 高速タイピング時の暴発を防止
-            flavor = "balanced";          // ロール対策（balancedに統一）
+            tapping-term-ms = <250>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <125>;
+            flavor = "balanced";
             bindings = <&mo>, <&kp>;
-        };
-    };
-
-    /* ========================================================================== */
-    /* 💡 [本物の解決策] ラベルを使わず、ルート内の自作リスナーとして安全に定義 */
-    /* ========================================================================== */
-    keymap_left_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-
-        /* 通常時は通常カーソル移動 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
-
-        /* レイヤー3（Qホールド時）：1/16減速で【上下左右すべて】スクロール化 */
-        scroll_l3 {
-            layers = <3>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>; // 👈 これで左手も左右スクロール（水平）が100%開通します
-        };
-
-        /* レイヤー5（Wホールド時）：1/16減速で【上下左右すべて】スクロール化 */
-        scroll_l5 {
-            layers = <5>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
         };
     };
 };
@@ -77,8 +40,6 @@
     keymap {
         compatible = "zmk,keymap";
 
-        /* レイヤー0：default_layer */
-
         default_layer {
             bindings = <
 &custom_lt 3 Q  &custom_lt 5 W    &kp E        &kp R             &kp T               &kp Y     &kp U               &kp I             &kp O        &custom_lt 4 P
@@ -87,8 +48,6 @@
 &kp ESC         &kp CAPSLOCK      &kp LCMD     &custom_lt 1 TAB  &custom_lt 2 SPACE  &kp BSPC  &custom_lt 2 ENTER  &kp LS(CAPSLOCK)  &to 3        &to 1
             >;
         };
-
-        /* レイヤー1：MOUSE */
 
         MOUSE {
             label = "NUMBER";
@@ -100,8 +59,6 @@
             >;
         };
 
-        /* レイヤー2：KIGO */
-
         KIGO {
             label = "FUNCTION";
             bindings = <
@@ -111,8 +68,6 @@
 &trans           &trans       &trans     &trans        &trans             &kp LS(CAPS)   &trans          &trans           &trans                  &kp ESCAPE
             >;
         };
-
-        /* レイヤー3：NUM */
 
         NUM {
             label = "MOUSE";
@@ -124,8 +79,6 @@
             >;
         };
 
-        /* レイヤー4：BT */
-
         BT {
             bindings = <
 &trans  &trans  &trans  &trans  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &trans
@@ -134,8 +87,6 @@
 &trans  &trans  &trans  &trans  &trans      &trans        &trans        &trans        &trans        &trans
             >;
         };
-
-        /* レイヤー5：NUM2 */
 
         NUM2 {
             bindings = <
