@@ -41,16 +41,22 @@
 };
 
 / {
-    /* reg = <0> を追加しました */
-    tb_right_split: split_input {
-        compatible = "zmk,input-split";
-        reg = <0>;
+    /* 専用のバスノードを作り、ここでアドレスとサイズを管理します */
+    split_bus {
+        compatible = "simple-bus";
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        tb_right_split: split_input@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
     };
 
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_right>;
+        device = <&tb_right_split>;
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
