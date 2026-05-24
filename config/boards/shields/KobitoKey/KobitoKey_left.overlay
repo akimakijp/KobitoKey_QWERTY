@@ -96,3 +96,12 @@
         >;
     };
 };
+/* 左手用リスナー定義（trackballが存在する側のみ記述） */
+/ {
+    left_scroll_listener: left_scroll_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+        device = <&tb_left>; /* &tb_left はこのファイル内にあるため安全 */
+        input-processors = <&sensor_rotation_left>, <&zip_x_scaler 0 1>, <&zip_y_scaler 1 15>, <&zip_xy_to_scroll_mapper>, <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
+    };
+};
