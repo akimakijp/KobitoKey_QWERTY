@@ -41,16 +41,17 @@
 };
 
 / {
-    /* 正しいノード定義: デバイスを正しく指定 */
-    tb_right_split: split_input@0 {
+    /* 直接ルート直下に配置し、バス構造を避ける */
+    tb_right_split: split_input {
         compatible = "zmk,input-split";
-        reg = <0>;
+        /* regを削除してもエラーになる場合は、コメントアウトした以下の行を試してください */
+        // reg = <0>; 
     };
 
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_right>; /* デバイスを明示的に指定 */
+        device = <&tb_right>;
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
