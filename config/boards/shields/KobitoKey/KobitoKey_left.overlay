@@ -53,7 +53,6 @@
         rotation-angle = <(-24)>;
     };
 
-    /* ここに device を追加しました */
     keymap_left_listener: keymap_left_listener {
         compatible = "zmk,input-listener";
         status = "okay";
@@ -78,17 +77,23 @@
             36 37 38 39 40
         >;
     };
-};
-/ {
+
     aliases {
         led-red = &led_red_dummy;
+        led-green = &led_green_dummy;
+        led-blue = &led_blue_dummy;
     };
 
     led_red_dummy: led_red_dummy {
         compatible = "gpio-leds";
-        /* Xiao BLEのピン適当なものを指定してください（今回はダミーなので何でもOKです） */
-        red_led: red_led {
-            gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; 
-        };
+        red_led: red_led { gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; };
+    };
+    led_green_dummy: led_green_dummy {
+        compatible = "gpio-leds";
+        green_led: green_led { gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>; };
+    };
+    led_blue_dummy: led_blue_dummy {
+        compatible = "gpio-leds";
+        blue_led: blue_led { gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>; };
     };
 };
