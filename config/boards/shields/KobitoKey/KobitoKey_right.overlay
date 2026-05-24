@@ -42,12 +42,11 @@
 };
 
 / {
-    /* 親ノードに reg を追加し、address-cells/size-cells を適合 */
-    split_inputs: split_inputs {
+    /* 修正: シンプルな split_inputs 構成 */
+    split_inputs {
         compatible = "zmk,input-split";
         #address-cells = <1>;
         #size-cells = <0>;
-        reg = <0>;
 
         tb_right_split: tb_right_split@0 {
             compatible = "zmk,input-split";
@@ -60,5 +59,17 @@
         status = "okay";
         device = <&tb_right_split>;
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
+
+    /* LEDウィジェット用ダミー（前回のビルドエラー回避用） */
+    aliases {
+        led-red = &led_red_dummy;
+    };
+
+    led_red_dummy: led_red_dummy {
+        compatible = "gpio-leds";
+        red_led: red_led {
+            gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; 
+        };
     };
 };
