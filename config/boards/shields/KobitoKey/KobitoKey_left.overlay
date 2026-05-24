@@ -36,26 +36,32 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         
-        /* 👈 最新ドライバ仕様に更新 */
-        motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        res-cpi = <200>; // cpi -> res-cpi
-
-        zephyr,axis-x = <INPUT_REL_X>; // x-input-code -> zephyr,axis-x
-        zephyr,axis-y = <INPUT_REL_Y>; // y-input-code -> zephyr,axis-y
+        /* 💡 ここを irq-gpios に戻します */
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        
+        /* 旧式のプロパティ表記に戻すことで必須チェックをクリアします */
+        cpi = <200>;
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_X>;
+        y-input-code = <INPUT_REL_Y>;
     };
 };
 
 / {
-    /* 👈 以前存在した左手用リスナーを、device を指定して定義 */
     keymap_left_listener: keymap_left_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_left>; // ここで左手用デバイスを参照
+        device = <&tb_left>;
         
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+        input-processors =
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_x_scaler 0 1>,
+            <&zip_y_scaler 1 15>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
     };
 
-    /* 👈 左手用LEDの定義をここで行う */
     aliases {
         led-red = &led_red_l;
         led-green = &led_green_l;
