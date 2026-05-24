@@ -41,15 +41,22 @@
 };
 
 / {
-    /* ノード名を明示的に指定して conflict を避けます */
-    my_split_inputs: my_split_inputs {
-        compatible = "zmk,input-split";
+    /* 親ノードとしての定義を追加し、regを正しく持たせます */
+    split_inputs {
+        compatible = "simple-bus";
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        tb_right_split: split_input@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
     };
 
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_right>;
+        device = <&tb_right_split>;
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
