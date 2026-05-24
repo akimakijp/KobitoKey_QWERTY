@@ -41,22 +41,16 @@
 };
 
 / {
-    /* 親ノードとしての定義を追加し、regを正しく持たせます */
-    split_inputs {
-        compatible = "simple-bus";
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        tb_right_split: split_input@0 {
-            compatible = "zmk,input-split";
-            reg = <0>;
-        };
+    /* 正しいノード定義: デバイスを正しく指定 */
+    tb_right_split: split_input@0 {
+        compatible = "zmk,input-split";
+        reg = <0>;
     };
 
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_right_split>;
+        device = <&tb_right>; /* デバイスを明示的に指定 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
