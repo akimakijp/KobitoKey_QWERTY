@@ -53,7 +53,8 @@
         rotation-angle = <(-24)>;
     };
 
-    left_scroll_listener: left_scroll_listener {
+    /* ここに device を追加しました */
+    keymap_left_listener: keymap_left_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_left>;
