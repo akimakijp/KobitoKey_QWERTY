@@ -3,18 +3,34 @@
 #include "KobitoKey-layouts.dtsi"
 
 /* ========================================================================== */
-/* 💡 [LED完全生存] モジュールが要求するエイリアスを本物のノード名で確定定義！ */
+/* 💡 [LED完全生存] モジュールが要求するエイリアスを本物のピン番号で直接定義！ */
 /* ========================================================================== */
 / {
     aliases {
-        led-red = &led2_red;     /* Seeeduino Xiao BLE 本物の赤LEDノード */
-        led-green = &led0_green; /* Seeeduino Xiao BLE 本物の緑LEDノード */
-        led-blue = &led1_blue;   /* Seeeduino Xiao BLE 本物の青LEDノード */
+        led-red = &led_red_node;
+        led-green = &led_green_node;
+        led-blue = &led_blue_node;
+    };
+
+    /* Seeeduino Xiao BLE基板上の本物のLEDピンをDeviceTreeに直接定義 */
+    leds {
+        compatible = "gpio-leds";
+        led_red_node: led_red_label {
+            gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
+        };
+        led_green_node: led_green_label {
+            gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
+        };
+        led_blue_node: led_blue_label {
+            gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
+        };
     };
 };
 
+/* ========================================================================== */
+/* キーボード基本定義（行列スキャン ＆ 物理レイアウト設定）                      */
+/* ========================================================================== */
 / {
-    /* 行列スキャン：rowは左右共通、colは左右で分ける */
     kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
@@ -31,7 +47,6 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH> ; 
     };
 
-    /* 左右合体で 4行×10列 */
     default_transform: keymap_transform0 {
         compatible = "zmk,matrix-transform";
         rows = <4>;
@@ -44,7 +59,6 @@
         >;
     };
 
-    /* 右側トラックボールを split 入力として扱う */
     split_inputs {
         #address-cells = <1>;
         #size-cells = <0>;
@@ -55,7 +69,7 @@
         };
     };
 
-    /* 💡 右手リスナー：完璧な上下左右スクロール設定 */
+    /* 右手リスナー：大成功していた完璧な上下左右スクロール設定 */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
@@ -74,16 +88,14 @@
         };
     };
 
-    /* 💡 左手専用リスナー：大元ノード 'trackball' を監視対象に指定 */
+    /* 左手専用リスナー：大元ノード 'trackball' を監視対象に指定 */
     left_scroll_listener: left_scroll_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball>;
 
-        /* 通常時はY軸を反転して通常カーソル移動 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
-        /* レイヤー3：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l3 {
             layers = <3>;
             input-processors = 
@@ -92,7 +104,6 @@
                 <&zip_xy_to_scroll_mapper>;
         };
 
-        /* レイヤー5：1/16減速で【上下左右すべて】の動きをスクロール化 */
         scroll_l5 {
             layers = <5>;
             input-processors = 
@@ -102,7 +113,6 @@
         };
     };
 
-    /* ★ 単体の物理レイアウト定義 */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
@@ -110,7 +120,6 @@
         transform = <&default_transform>;
     };
 
-    /* ★ デフォルトレイアウト指定 */
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
