@@ -9,7 +9,6 @@
         diode-direction = "col2row";
         wakeup-source;
 
-        /* Dピンは &xiao_d <番号> で指定（XIAOフォーマット） */
         row-gpios = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>, 
                     <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>, 
                     <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>, 
@@ -21,7 +20,7 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH> ; 
     };
 
-    /* 左右合体で 4行×10列（左0..4, 右5..9） */
+    /* 左右合体で 4行×10列 */
     default_transform: keymap_transform0 {
         compatible = "zmk,matrix-transform";
         rows = <4>;
@@ -45,37 +44,22 @@
         };
     };
 
-    /* 💡 左手リスナー：一番最初に100%ビルドが通っていた「初期状態」に完全に戻します */
-    tb_left_listener: tb_left_listener {
-        compatible = "zmk,input-listener";
-        status = "disabled";
-    };
-
-    /* 💡 右手リスナー：大成功していた「上下左右1/16減速スクロール」を完全な形で維持します */
+    /* 💡 右手リスナー：大成功していた完璧な上下左右スクロール設定（レイヤー3, 5連動） */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_right_split>;
 
-        /* 通常時：Y軸を反転して通常カーソル移動 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
-        /* レイヤー3（Qホールド時）：1/16減速で【上下左右】スクロール */
         scroll_l3 {
             layers = <3>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
+            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
         };
 
-        /* レイヤー5（Wホールド時）：1/16減速で【上下左右】スクロール */
         scroll_l5 {
             layers = <5>;
-            input-processors = 
-                <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-                <&zip_xy_scaler 1 16>,
-                <&zip_xy_to_scroll_mapper>;
+            input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_scaler 1 16>, <&zip_xy_to_scroll_mapper>;
         };
     };
 
@@ -87,8 +71,22 @@
         transform = <&default_transform>;
     };
 
-    /* ★ デフォルトで使うレイアウトを指す chosen ブロック */
+    /* ★ デフォルトレイアウト指定 */
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
+};
+
+/* ========================================================================== */
+/* 💡 [最重要] システムが自動生成した左手側入力を、外側から完全に「支配」する */
+/* ========================================================================== */
+
+&tb_left_listener {
+    status = "okay";
+    
+    /* 👈 「常に（どのレイヤーでも）」1/16減速かつ上下左右スクロール（水平対応）として動作させる極限設定 */
+    input-processors = 
+        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+        <&zip_xy_scaler 1 16>,
+        <&zip_xy_to_scroll_mapper>;
 };
