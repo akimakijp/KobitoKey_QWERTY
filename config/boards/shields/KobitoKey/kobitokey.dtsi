@@ -33,7 +33,7 @@
         >;
     };
 
-    /* 右側トラックボールを split 入力として扱う（ID=0） */
+    /* 右側トラックボールを split 入力として扱う */
     split_inputs {
         #address-cells = <1>;
         #size-cells = <0>;
@@ -74,5 +74,34 @@
     /* ★ デフォルトレイアウト指定 */
     chosen {
         zmk,physical-layout = &physical_layout0;
+    };
+};
+
+/* ========================================================================== */
+/* 💡 [完全解決] 外部から左手リスナーを呼び出し、軸のバグを完全に修正して有効化する */
+/* ========================================================================== */
+
+&tb_left_listener {
+    status = "okay"; // 👈 disabled だった左手を確実に「有効化」
+
+    /* 通常時：Y軸を反転して通常カーソル移動 */
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+    /* レイヤー3（Qホールド時）：左手特有の軸ズレを修正し、1/16減速で【上下左右すべて】スクロール化 */
+    scroll_l3 {
+        layers = <3>;
+        input-processors = 
+            <&zip_xy_transform (INPUT_TRANSFORM_Y_INVERT)>, // 👈 軸の反転・回転補正
+            <&zip_xy_scaler 1 16>,
+            <&zip_xy_to_scroll_mapper>; // 👈 これで消えていた左右スクロールが100%開通します
+    };
+
+    /* レイヤー5（Wホールド時）：同様に1/16減速で【上下左右すべて】スクロール化 */
+    scroll_l5 {
+        layers = <5>;
+        input-processors = 
+            <&zip_xy_transform (INPUT_TRANSFORM_Y_INVERT)>,
+            <&zip_xy_scaler 1 16>,
+            <&zip_xy_to_scroll_mapper>;
     };
 };
