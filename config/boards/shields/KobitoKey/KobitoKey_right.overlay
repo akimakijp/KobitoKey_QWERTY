@@ -42,16 +42,10 @@
 };
 
 / {
-    /* 修正: シンプルな split_inputs 構成 */
-    split_inputs {
+    /* 修正: 直接 reg を持たせることでバインディングエラーを回避 */
+    tb_right_split: split_inputs {
         compatible = "zmk,input-split";
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        tb_right_split: tb_right_split@0 {
-            compatible = "zmk,input-split";
-            reg = <0>;
-        };
+        reg = <0>;
     };
 
     tb_right_listener: tb_right_listener {
@@ -61,7 +55,6 @@
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
-    /* LEDウィジェット用ダミー（前回のビルドエラー回避用） */
     aliases {
         led-red = &led_red_dummy;
     };
