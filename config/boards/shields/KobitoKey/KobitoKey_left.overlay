@@ -39,7 +39,6 @@
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <200>; /* センサー感度 */
 
-
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
@@ -68,12 +67,12 @@
 
     input-processors =
             <&sensor_rotation_left>,
-            <&zip_x_scaler 0 1>,
+            <&zip_x_scaler 1 1>, /* 💡 0 1 から 1 1 に修正：左右の移動を殺さずスクロールに反映します */
             <&zip_y_scaler 1 15>,
             <&zip_xy_to_scroll_mapper>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
-    };
+};
 
 / {
   /omit-if-no-ref/ zip_temp_layer: zip_temp_layer {
