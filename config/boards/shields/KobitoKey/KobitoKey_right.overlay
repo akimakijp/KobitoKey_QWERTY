@@ -32,7 +32,6 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         
-        /* 以前のirq-gpiosに戻す */
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <600>;
         
@@ -56,10 +55,11 @@
         led-blue = &blue_led;
     };
 
+    /* 💡 右手側もバッテリーピン(14)との衝突を回避するため、安全なオンボードLEDピンに変更 */
     led_strip: gpio_leds {
         compatible = "gpio-leds";
-        red_led: red_led { gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; };
-        green_led: green_led { gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>; };
-        blue_led: blue_led { gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>; };
+        red_led: red_led     { gpios = <&gpio0 26 GPIO_ACTIVE_LOW>; };
+        green_led: green_led { gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; }; /* 重複を回避 */
+        blue_led: blue_led   { gpios = <&gpio0 6 GPIO_ACTIVE_LOW>; };
     };
 };
