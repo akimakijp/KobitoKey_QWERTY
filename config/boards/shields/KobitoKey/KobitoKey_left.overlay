@@ -51,8 +51,8 @@
         status = "okay";
         device = <&tb_left>;
         
-        /* 💡 構文エラーを回避しつつ上下の逆転を直すため、何も反転しない空の設定値(INPUT_TRANSFORM_NONE)を引数に指定しました */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_NONE>;
+        /* 💡 不確定なマクロ名を避け、直接「0」を指定することで確実にエラーを回避し、上下逆転を直します */
+        input-processors = <&zip_xy_transform 0>;
     };
 
     aliases {
