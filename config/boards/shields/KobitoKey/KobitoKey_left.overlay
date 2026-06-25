@@ -4,14 +4,28 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 トラックボール(tb_left)の通信・ピン定義の実体をここに維持します。
- * 基板本来のピンアサインを壊さず機能させるため、&spi0 ブロックを復元しました。
- */
+/* 💡 エラーの原因だった pinctrl 定義（spi0_default などの実体）を復元しました */
+&pinctrl {
+    spi0_default: spi0_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
+        };
+    };
+    spi0_sleep: spi0_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
+            low-power-enable;
+        };
+    };
+};
+
 &spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
-    
-    /* 元々指定されていた特殊な通信用割り当てピンをそのまま維持 */
     pinctrl-0 = <&spi0_default>;
     pinctrl-1 = <&spi0_sleep>;
     pinctrl-names = "default", "sleep";
@@ -36,7 +50,7 @@
     keymap_left_listener: keymap_left_listener {
         compatible = "zmk,input-listener";
         status = "okay";
-        device = <&tb_left>; /* 💡これで tb_left が見つかりエラーが消えます */
+        device = <&tb_left>;
         
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
