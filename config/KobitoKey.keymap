@@ -3,6 +3,19 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
+/* 💡 ルートノード外: レイヤー3（NUM）が有効なとき、
+   右手のトラックボールをスクロール（上下左右反転を含む）に切り替える設定 */
+&tb_right_listener {
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+
+    /* レイヤー3（NUM）がアクティブな時だけ、スクロールマッパーを有効化します */
+    layer-3-processors = 
+        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+        <&zip_xy_to_scroll_mapper>,
+        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+        <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
+};
+
 / {
     behaviors {
         hm: home_row_mods {
