@@ -6,14 +6,14 @@
 
 &pinctrl {
     spi0_default_r: spi0_default_r { group1 {
-        psels = <NRF_PSEL(SPIM_SCK,  0,  5)>,
-                <NRF_PSEL(SPIM_MOSI, 0,  4)>,
-                <NRF_PSEL(SPIM_MISO, 0,  4)>;
+        psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                <NRF_PSEL(SPIM_MISO, 0, 4)>;
     }; };
     spi0_sleep_r: spi0_sleep_r { group1 {
-        psels = <NRF_PSEL(SPIM_SCK,  0,  5)>,
-                <NRF_PSEL(SPIM_MOSI, 0,  4)>,
-                <NRF_PSEL(SPIM_MISO, 0,  4)>;
+        psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                <NRF_PSEL(SPIM_MISO, 0, 4)>;
         low-power-enable;
     }; };
 };
@@ -32,8 +32,8 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         
-        /* 💡開発元の回路設計に合わせ、割り込みピンを正確な定義に変更 */
-        irq-gpios = <&gpio0 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        /* 💡動いていた元のピン（P0.02）に完全に復元 */
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <600>;
         
         evt-type = <INPUT_EV_REL>;
@@ -56,10 +56,14 @@
         led-blue = &blue_led;
     };
 
+    /* 💡【重要】元々動いていたピン（13, 14, 15）に100%巻き戻しました。
+     * 右手側（子機）は、PCに直接USB接続して使うわけではない（左手側がPCと繋がる）ため、
+     * ここが「14」のままであっても、左手側のような充電不良（フリーズ）は発生しません。
+     */
     led_strip: gpio_leds {
         compatible = "gpio-leds";
-        red_led: red_led     { gpios = <&gpio0 26 GPIO_ACTIVE_LOW>; };
-        green_led: green_led { gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; }; 
-        blue_led: blue_led   { gpios = <&gpio0 6 GPIO_ACTIVE_LOW>; };
+        red_led: red_led     { gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>; };
+        green_led: green_led { gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>; }; 
+        blue_led: blue_led   { gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>; };
     };
 };
