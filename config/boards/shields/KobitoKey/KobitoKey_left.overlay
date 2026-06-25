@@ -4,7 +4,6 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 エラーの原因だった pinctrl 定義（spi0_default などの実体）を復元しました */
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
@@ -52,23 +51,20 @@
         status = "okay";
         device = <&tb_left>;
         
-        input-processors = <&zip_xy_transform>;
+        /* 💡 構文エラーを回避しつつ上下の逆転を直すため、何も反転しない空の設定値(INPUT_TRANSFORM_NONE)を引数に指定しました */
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_NONE>;
     };
 
-    /* 💡 エラー（static assertion failed）を回避するための必須エイリアス */
     aliases {
         led-red = &led_red_l;
         led-green = &led_green_l;
         led-blue = &led_blue_l;
     };
 
-    /* 💡 充電不良の原因となっていた「gpio0 14」の競合を完全に回避し、
-     * XIAOボード本体の安全なオンボードLEDピンに逃がします。
-     */
     gpio_leds {
         compatible = "gpio-leds";
         led_red_l: led_red     { gpios = <&gpio0 26 GPIO_ACTIVE_LOW>; };
-        led_green_l: led_green { gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; }; /* 重複を完全に回避 */
+        led_green_l: led_green { gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; };
         led_blue_l: led_blue   { gpios = <&gpio0 6 GPIO_ACTIVE_LOW>; };
     };
 };
