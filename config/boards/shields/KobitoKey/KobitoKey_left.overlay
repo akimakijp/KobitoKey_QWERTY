@@ -1,6 +1,7 @@
 #include "kobitokey.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <input/processors.dtsi>
+#include <input/processors/sensor_rotation.dtsi>
 
 &xiao_serial { status = "disabled"; };
 
@@ -35,10 +36,10 @@
         compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
-        
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        
-        cpi = <200>;
+        cpi = <200>; /* センサー感度 */
+
+
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
@@ -46,25 +47,58 @@
 };
 
 / {
-    keymap_left_listener: keymap_left_listener {
-        compatible = "zmk,input-listener";
+    sensor_rotation_left: sensor-rotation-left {
+        compatible = "zmk,input-processor-sensor-rotation";
         status = "okay";
-        device = <&tb_left>;
-        
-        /* 💡 不確定なマクロ名を避け、直接「0」を指定することで確実にエラーを回避し、上下逆転を直します */
-        input-processors = <&zip_xy_transform 0>;
+        #input-processor-cells = <0>;
+        rotation-angle = <(-24)>;
     };
 
-    aliases {
-        led-red = &led_red_l;
-        led-green = &led_green_l;
-        led-blue = &led_blue_l;
+    sensor_rotation_right: sensor-rotation-right {
+        compatible = "zmk,input-processor-sensor-rotation";
+        #input-processor-cells = <0>;
+        status = "okay";
+        rotation-angle = <24>;
+    };
+};
+
+&tb_left_listener {
+    status = "okay";
+    device = <&tb_left>;
+
+    input-processors =
+            <&sensor_rotation_left>,
+            <&zip_x_scaler 0 1>,
+            <&zip_y_scaler 1 15>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
     };
 
-    gpio_leds {
-        compatible = "gpio-leds";
-        led_red_l: led_red     { gpios = <&gpio0 26 GPIO_ACTIVE_LOW>; };
-        led_green_l: led_green { gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; };
-        led_blue_l: led_blue   { gpios = <&gpio0 6 GPIO_ACTIVE_LOW>; };
-    };
+/ {
+  /omit-if-no-ref/ zip_temp_layer: zip_temp_layer {
+    compatible = "zmk,input-processor-temp-layer";
+    #input-processor-cells = <2>;
+    require-prior-idle-ms = <350>; /* キー押下後、何msオートマウスレイヤに入らないようにするか、誤爆防止 */
+  };
+};
+
+&tb_right_listener {
+    status = "okay";
+
+    input-processors =
+        <&sensor_rotation_right>,
+        <&zip_temp_layer 3 5000>; /* オートマウスレイヤーの指定とトラボ操作及びマウスボタン押下後に滞留する時間 */
+};
+
+&zip_temp_layer {
+    excluded-positions = <
+        6
+        7
+        8
+        30
+        32
+        33
+        39
+    >;
 };
