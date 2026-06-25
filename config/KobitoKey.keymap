@@ -2,9 +2,21 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
-#include <dt-bindings/zmk/input_transform.h>
 
 / {
+    /* 💡 レイヤー3にいるとき、右手トラックボールのハードウェア移動入力を
+       ZMK標準のマウススクロール（msc）の仮想キーコードへ直結・変換する定義 */
+    trackball_scroll {
+        compatible = "zmk,input-listener";
+        device = <&tb_right>;
+        /* Layer 3（NUM）が有効なときだけこのリスナーを動作させます */
+        layers = <3>; 
+        input-processors = 
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
+    };
+
     behaviors {
         hm: home_row_mods {
             compatible = "zmk,behavior-hold-tap";
