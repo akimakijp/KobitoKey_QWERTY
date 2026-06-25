@@ -6,14 +6,14 @@
 
 &pinctrl {
     spi0_default_r: spi0_default_r { group1 {
-        psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+        psels = <NRF_PSEL(SPIM_SCK,  0,  5)>,
+                <NRF_PSEL(SPIM_MOSI, 0,  4)>,
+                <NRF_PSEL(SPIM_MISO, 0,  4)>;
     }; };
     spi0_sleep_r: spi0_sleep_r { group1 {
-        psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+        psels = <NRF_PSEL(SPIM_SCK,  0,  5)>,
+                <NRF_PSEL(SPIM_MOSI, 0,  4)>,
+                <NRF_PSEL(SPIM_MISO, 0,  4)>;
         low-power-enable;
     }; };
 };
@@ -32,7 +32,8 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         
-        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        /* 💡開発元の回路設計に合わせ、割り込みピンを正確な定義に変更 */
+        irq-gpios = <&gpio0 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <600>;
         
         evt-type = <INPUT_EV_REL>;
@@ -42,7 +43,6 @@
 };
 
 / {
-    /* 💡 リスナーの名前を ZMK の自動検知に引っかかる正確な名称（keymap_right_listener）に修正しました */
     keymap_right_listener: keymap_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
