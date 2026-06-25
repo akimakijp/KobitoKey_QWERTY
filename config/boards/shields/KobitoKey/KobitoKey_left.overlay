@@ -2,48 +2,10 @@
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <input/processors.dtsi>
 
-&xiao_serial { status = "disabled"; };
-
-&pinctrl {
-    spi0_default: spi0_default {
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 10)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 9)>;
-        };
-    };
-    spi0_sleep: spi0_sleep {
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 10)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 9)>;
-            low-power-enable;
-        };
-    };
-};
-
-&spi0 {
-    status = "okay";
-    compatible = "nordic,nrf-spim";
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
-    pinctrl-names = "default", "sleep";
-    cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
-
-    tb_left: trackball@0 {
-        status = "okay";
-        compatible = "pixart,pmw3610";
-        reg = <0>;
-        spi-max-frequency = <2000000>;
-        
-        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        
-        cpi = <200>;
-        evt-type = <INPUT_EV_REL>;
-        x-input-code = <INPUT_REL_X>;
-        y-input-code = <INPUT_REL_Y>;
-    };
-};
+/* * 💡【重要】SPIピンの設定は、フォーク元の小人キー本来のピン（spi3 / 特殊割り当て）を
+ * 維持するため、下層のdtsiやボード定義の元のピンアサインに処理を任せます。
+ * 独自に &spi0 や &pinctrl をここで上書き定義すると通信が途絶えるため、削除しました。
+ */
 
 / {
     keymap_left_listener: keymap_left_listener {
@@ -54,18 +16,20 @@
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
-    /* 💡 エラー(static assertion failed)を回避するための必須定義 */
+    /* 💡 エラー（static assertion failed）を回避するための必須エイリアス */
     aliases {
         led-red = &led_red_l;
         led-green = &led_green_l;
         led-blue = &led_blue_l;
     };
 
-    /* 💡 バッテリー電圧測定ピン(P0.14)との衝突を回避した安全なピン定義 */
+    /* * 💡 充電不良の原因となっていた「gpio0 14」を回避し、
+     * XIAOのオンボード（ボード本体）に実装されている安全なLEDピンに退避させます。
+     */
     gpio_leds {
         compatible = "gpio-leds";
         led_red_l: led_red     { gpios = <&gpio0 26 GPIO_ACTIVE_LOW>; };
-        led_green_l: led_green { gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; };
+        led_green_l: led_green { gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; }; /* 重複を完全に回避 */
         led_blue_l: led_blue   { gpios = <&gpio0 6 GPIO_ACTIVE_LOW>; };
     };
 };
