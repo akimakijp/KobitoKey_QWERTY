@@ -31,7 +31,8 @@
     };
 
     chosen {
-        zmk,physical-layout = &physical_layout0;
+        // &physical_layout0 から以下に変更
+        zmk,physical-layout = &kobitokey_layout;
     };
     
     physical_layout0: physical_layout_0 {
