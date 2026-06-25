@@ -42,26 +42,11 @@
 };
 
 / {
-    /* 💡 ZMK v0.3互換のレイヤー条件付きインプットプロセッサの定義 */
-    zip_conditional_scroll_right: zip_conditional_scroll_right {
-        compatible = "zmk,input-processor-intercept-layer";
-        #input-processor-cells = <1>;
-        /* Layer 3 (NUMレイヤー) がアクティブな時だけ、下のプロセッサを実行する */
-        layer = <3>; 
-        processor = <&zip_xy_to_scroll_mapper>;
-    };
-
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&tb_right>;
-        
-        /* 💡 通常時はY軸反転のみ。ただしLayer 3の時は上記の設定によってスクロールに変化 */
-        input-processors = 
-            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_conditional_scroll_right 0>,
-            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
-            <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
     aliases {
