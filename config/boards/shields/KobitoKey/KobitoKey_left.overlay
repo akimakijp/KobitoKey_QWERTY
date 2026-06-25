@@ -62,6 +62,7 @@
             <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;
     };
 
+/* 一度このLED定義を完全に無効化します
     aliases {
         led-red = &led_red_l;
         led-green = &led_green_l;
@@ -74,4 +75,5 @@
         led_green_l: led_green { gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>; };
         led_blue_l: led_blue { gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>; };
     };
+*/
 };
