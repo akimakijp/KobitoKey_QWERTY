@@ -20,15 +20,8 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 重要: 左側であっても、Split通信の入力元として tb_right を定義しておく必要があります */
-/ {
-    split_inputs {
-        compatible = "zmk,split-inputs";
-        tb_right: tb_right {
-            input = <&tb_right_split>; // ここで右側からのSplit入力を指定
-        };
-    };
-};
+/* 💡 左側にはトラックボールの定義は一切書かない */
+/* その代わり、Split通信経由で右側の tb_right を参照する設定だけを残します */
 
 &tb_right_split {
     status = "okay";
