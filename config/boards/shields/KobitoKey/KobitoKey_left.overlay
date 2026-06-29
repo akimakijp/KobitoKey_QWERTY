@@ -20,19 +20,30 @@
 
 &xiao_serial { status = "disabled"; };
 
+/* 💡 存在する全てのinput-splitを明示的に制御する */
 / {
     split_inputs {
         compatible = "zmk,split-inputs";
         
+        /* 1番目のノード（自分自身を参照させてASSERTを回避） */
         tb_right: tb_right@0 {
             compatible = "zmk,input-split";
             reg = <0>;
+            input = <&tb_right>; 
+        };
+        
+        /* 2番目のノード（検出されているため、これも有効化してASSERTを回避） */
+        tb_unused: tb_right@1 {
+            compatible = "zmk,input-split";
+            reg = <1>;
+            input = <&tb_unused>;
         };
     };
 };
 
-/* 💡 input プロパティを削除し、純粋な定義のみにします */
+/* リスナーには本来のソースを紐付ける */
 &tb_right_listener {
     status = "okay";
+    input = <&tb_right>;
     input-processors = <&zip_temp_layer 3 5000>;
 };
