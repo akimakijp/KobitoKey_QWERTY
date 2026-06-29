@@ -37,7 +37,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        bpi = <200>; /* 💡 cpi から bpi へ修正（センサー感度） */
+        res-cpi = <200>; /* 💡 最新ドライバー仕様の res-cpi へ修正 */
 
         evt-type = <INPUT_EV_REL>;
         zephyr,axis-x = <INPUT_REL_X>;
