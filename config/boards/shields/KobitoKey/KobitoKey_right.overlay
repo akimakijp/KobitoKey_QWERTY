@@ -54,7 +54,9 @@
         
         /* 💡 cpi を res-cpi に変更 (値は元の600を維持) */
         res-cpi = <600>;
-        
+
+　　　　/* 💡 右側がスリープしても、トラックボールの動きで復帰できるようにする */
+        wakeup-source;
         /* 💡 最新仕様に合わせて不要な evt-type, x-input-code, y-input-code を削除し、以下に置き換え */
         zephyr,axis-x = <INPUT_REL_X>;
         zephyr,axis-y = <INPUT_REL_Y>;
