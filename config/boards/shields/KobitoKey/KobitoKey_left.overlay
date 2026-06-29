@@ -48,8 +48,10 @@
         status = "okay";
         compatible = "pixart,pmw3610";
         reg = <0>;
-        /* 💡 ダミーのピンを指定してドライバーの要求をクリア */
         motion-gpios = <&gpio0 0 0>;
+        /* 💡 必須プロパティを追加 */
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
     };
 };
 
