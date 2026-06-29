@@ -3,10 +3,10 @@
 #include <input/processors.dtsi>
 #include <input/processors/sensor_rotation.dtsi>
 
+/* LEDウィジェット用のダミーエイリアス定義 */
 / {
     dummy_leds {
         compatible = "gpio-leds";
-        /* 💡 XIAO BLEに確実に存在する未使用ピン（P0.06, P0.26, P0.30）に変更 */
         led_red: led_0 { gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>; };
         led_green: led_1 { gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>; };
         led_blue: led_2 { gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>; };
@@ -38,8 +38,10 @@
     };
 };
 
+/* 💡 最新のZMK仕様に合わせて device から input プロパティへ変更 */
 &tb_right_split {
     status = "okay";
+    input = <&tb_right>; 
 };
 
 &tb_right_listener {
