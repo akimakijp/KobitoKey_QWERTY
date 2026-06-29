@@ -2,13 +2,13 @@
 #include "kobitokey.dtsi"
 #include <input/processors.dtsi>
 
-/* LEDウィジェット用のダミーエイリアス定義 */
 / {
     dummy_leds {
         compatible = "gpio-leds";
-        led_red: led_0 { gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>; };
-        led_green: led_1 { gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>; };
-        led_blue: led_2 { gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>; };
+        /* 💡 左側と同じ安全なピンを指定 */
+        led_red: led_0 { gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>; };
+        led_green: led_1 { gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>; };
+        led_blue: led_2 { gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>; };
     };
 
     aliases {
@@ -18,7 +18,6 @@
     };
 };
 
-/* 列オフセット */
 &default_transform { col-offset = <5>; };
 
 &pinctrl {
@@ -31,7 +30,6 @@
         psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                 <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                 <NRF_PSEL(SPIM_MISO, 0, 4)>;
-        /* low-power-enable は削除済み */
     }; };
 };
 
@@ -51,8 +49,6 @@
         
         motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         res-cpi = <600>;
-        
-        /* 💡 正しい階層に wakeup-source を配置 */
         wakeup-source;
 
         zephyr,axis-x = <INPUT_REL_X>;
