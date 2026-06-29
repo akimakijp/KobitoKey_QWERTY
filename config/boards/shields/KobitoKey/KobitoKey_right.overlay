@@ -2,6 +2,22 @@
 #include "kobitokey.dtsi"
 #include <input/processors.dtsi>
 
+/* 💡 右側にもLEDウィジェット用のダミーエイリアスを追加してエラーを回避 */
+/ {
+    dummy_leds {
+        compatible = "gpio-leds";
+        led_red: led_0 { gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>; };
+        led_green: led_1 { gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>; };
+        led_blue: led_2 { gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>; };
+    };
+
+    aliases {
+        led-red = &led_red;
+        led-green = &led_green;
+        led-blue = &led_blue;
+    };
+};
+
 /* 列オフセット */
 &default_transform { col-offset = <5>; };
 
@@ -32,12 +48,16 @@
         compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
-        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <600>;
         
-        evt-type = <INPUT_EV_REL>;
-        x-input-code = <INPUT_REL_X>;
-        y-input-code = <INPUT_REL_Y>;
+        /* 💡 irq-gpios を motion-gpios に変更 */
+        motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        
+        /* 💡 cpi を res-cpi に変更 (値は元の600を維持) */
+        res-cpi = <600>;
+        
+        /* 💡 最新仕様に合わせて不要な evt-type, x-input-code, y-input-code を削除し、以下に置き換え */
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
     };
 };
 
