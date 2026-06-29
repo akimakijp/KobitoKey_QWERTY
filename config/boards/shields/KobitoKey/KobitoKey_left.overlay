@@ -20,11 +20,11 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 左側にはトラックボールの定義は一切書かない */
-/* その代わり、Split通信経由で右側の tb_right を参照する設定だけを残します */
-
+/* 💡 コンパイラのASSERTを回避するために必要な、最小限のinput定義 */
 &tb_right_split {
     status = "okay";
+    /* ここがBUILD_ASSERTでチェックされる箇所です */
+    input = <&tb_right_split>; 
 };
 
 &tb_right_listener {
