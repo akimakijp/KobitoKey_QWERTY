@@ -20,23 +20,20 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 正しい記述: 
-   split_inputsノード配下にノードを作成し、
-   その中に zmk,input-split を定義します。
-*/
+/* 💡 Split入力の定義はここだけで完結させます */
 / {
     split_inputs {
         compatible = "zmk,split-inputs";
         
-        tb_right_split: tb_right_split {
+        tb_right: tb_right {
             compatible = "zmk,input-split";
         };
     };
 };
 
-/* 💡 リスナー（処理部）はSplitノードを直接指定します */
+/* 💡 リスナー側は定義済みの tb_right を参照します */
 &tb_right_listener {
     status = "okay";
-    input = <&tb_right_split>;
+    input = <&tb_right>;
     input-processors = <&zip_temp_layer 3 5000>;
 };
