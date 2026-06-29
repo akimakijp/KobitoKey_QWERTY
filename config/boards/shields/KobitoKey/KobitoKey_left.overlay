@@ -37,6 +37,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; /* 💡 最新ZMK（Zephyr 4.x）で必須となったため追加 */
         cpi = <200>; /* センサー感度 */
 
         evt-type = <INPUT_EV_REL>;
@@ -71,7 +72,6 @@
             <&zip_y_scaler 1 15>,
             <&zip_xy_to_scroll_mapper>,
             <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>;
-            /* 💡 左右の逆転を直すため、INPUT_TRANSFORM_X_INVERT の行を削除しました */
 };
 
 / {
