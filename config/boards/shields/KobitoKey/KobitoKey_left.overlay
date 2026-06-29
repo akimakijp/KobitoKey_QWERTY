@@ -20,18 +20,20 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 Split入力の定義はここだけで完結させます */
+/* 💡 正しいSplit入力定義 */
 / {
     split_inputs {
         compatible = "zmk,split-inputs";
         
-        tb_right: tb_right {
+        /* @0 を付与し、対応する reg = <0> を記述します */
+        tb_right: tb_right@0 {
             compatible = "zmk,input-split";
+            reg = <0>;
         };
     };
 };
 
-/* 💡 リスナー側は定義済みの tb_right を参照します */
+/* 💡 リスナー側からの参照 */
 &tb_right_listener {
     status = "okay";
     input = <&tb_right>;
