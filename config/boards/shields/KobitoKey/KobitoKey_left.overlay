@@ -20,35 +20,15 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 ラベル tb_right を宣言するための空の定義 */
-/ {
-    aliases {
-        tb_right = &tb_right;
-    };
-};
-
-/* トラックボール用ノード定義の代わりに、
-   Split側の参照先となるラベルだけをここに確保します 
+/* 💡 左側（セントラル）は右側からの入力を受け取る設定だけを行う。
+   実体ノードは不要。
 */
-&pinctrl {
-    /* (空のpinctrlでも、ここでラベルを解決させます) */
-};
 
 &tb_right_split {
     status = "okay";
-    input = <&tb_right>; 
 };
 
 &tb_right_listener {
     status = "okay";
     input-processors = <&zip_temp_layer 3 5000>;
-};
-
-/* 💡 最も重要な解決策：ダミーのトラックボールノードを再度定義しますが、
-   ドライバーをロードさせないよう status を "disabled" にします。
-   これなら必須プロパティチェックを回避しつつ、ラベルが有効になります。 */
-&spi0 {
-    tb_right: trackball@0 {
-        status = "disabled";
-    };
 };
