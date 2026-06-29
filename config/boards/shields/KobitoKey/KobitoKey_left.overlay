@@ -20,14 +20,23 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 コンパイラのASSERTを回避するために必要な、最小限のinput定義 */
-&tb_right_split {
-    status = "okay";
-    /* ここがBUILD_ASSERTでチェックされる箇所です */
-    input = <&tb_right_split>; 
+/* 💡 正しい記述: 
+   split_inputsノード配下にノードを作成し、
+   その中に zmk,input-split を定義します。
+*/
+/ {
+    split_inputs {
+        compatible = "zmk,split-inputs";
+        
+        tb_right_split: tb_right_split {
+            compatible = "zmk,input-split";
+        };
+    };
 };
 
+/* 💡 リスナー（処理部）はSplitノードを直接指定します */
 &tb_right_listener {
     status = "okay";
+    input = <&tb_right_split>;
     input-processors = <&zip_temp_layer 3 5000>;
 };
