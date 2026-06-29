@@ -2,13 +2,13 @@
 #include "kobitokey.dtsi"
 #include <input/processors.dtsi>
 
-/* 💡 右側にもLEDウィジェット用のダミーエイリアスを追加してエラーを回避 */
+/* LEDウィジェット用のダミーエイリアス定義 */
 / {
     dummy_leds {
         compatible = "gpio-leds";
-        led_red: led_0 { gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>; };
-        led_green: led_1 { gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>; };
-        led_blue: led_2 { gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>; };
+        led_red: led_0 { gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>; };
+        led_green: led_1 { gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>; };
+        led_blue: led_2 { gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>; };
     };
 
     aliases {
@@ -27,11 +27,11 @@
                 <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                 <NRF_PSEL(SPIM_MISO, 0, 4)>;
     }; };
-    /* 💡 spi0_sleep_r の中身を default と同じにして low-power-enable を削除 */
     spi0_sleep_r: spi0_sleep_r { group1 {
         psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                 <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                 <NRF_PSEL(SPIM_MISO, 0, 4)>;
+        /* low-power-enable は削除済み */
     }; };
 };
 
@@ -49,15 +49,12 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         
-        /* 💡 irq-gpios を motion-gpios に変更 */
         motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        
-        /* 💡 cpi を res-cpi に変更 (値は元の600を維持) */
         res-cpi = <600>;
-
-　　　　/* 💡 右側がスリープしても、トラックボールの動きで復帰できるようにする */
+        
+        /* 💡 正しい階層に wakeup-source を配置 */
         wakeup-source;
-        /* 💡 最新仕様に合わせて不要な evt-type, x-input-code, y-input-code を削除し、以下に置き換え */
+
         zephyr,axis-x = <INPUT_REL_X>;
         zephyr,axis-y = <INPUT_REL_Y>;
     };
@@ -65,6 +62,5 @@
 
 &tb_right_split {
     device = <&tb_right>;
-
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
