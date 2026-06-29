@@ -20,7 +20,6 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 左側のSPIピン設定（ダミーで右側と同じピンを割り当てておく） */
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
@@ -49,6 +48,8 @@
         status = "okay";
         compatible = "pixart,pmw3610";
         reg = <0>;
+        /* 💡 ダミーのピンを指定してドライバーの要求をクリア */
+        motion-gpios = <&gpio0 0 0>;
     };
 };
 
