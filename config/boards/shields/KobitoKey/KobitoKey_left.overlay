@@ -20,21 +20,30 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 修正箇所：inputプロパティを一切記述しない */
+/* 💡 Split入力の定義を整理 */
 / {
     split_inputs {
         compatible = "zmk,split-inputs";
         
+        /* 1. 使用する本来のノード */
         tb_right: tb_right@0 {
             compatible = "zmk,input-split";
             reg = <0>;
+            /* ⚠️注: ここに input は書かない（スキーマ違反のため） */
+        };
+
+        /* 2. 自動検知されている不要なノードを強制的に無効化 */
+        tb_unused: tb_right@1 {
+            compatible = "zmk,input-split";
+            reg = <1>;
+            status = "disabled";
         };
     };
 };
 
-/* 💡 リスナー側もinputの直指定をやめ、単純にノードを紐付ける */
+/* 💡 リスナー側に input を紐付ける (これが正しい手法です) */
 &tb_right_listener {
     status = "okay";
-    /* inputプロパティはDTSではなく、ZMKの内部で自動解決させます */
+    input = <&tb_right>; 
     input-processors = <&zip_temp_layer 3 5000>;
 };
