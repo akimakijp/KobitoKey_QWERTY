@@ -28,11 +28,12 @@
         >;
     };
 
-    tb_right_split: input_split {
+    /* ラベルとノード名を改行なしで接続 */
+    tb_right_split:input_split {
         compatible = "zmk,input-split";
     };
 
-    tb_right_listener: input_listener {
+    tb_right_listener:input_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
