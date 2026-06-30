@@ -1,8 +1,6 @@
-/* インクルードを全てダブルクォートに変更し、コンパイラの探索ミスを回避 */
 #include "KobitoKey-layouts.dtsi"
 
 / {
-    /* キーボード走査用ピン定義 */
     kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
@@ -18,7 +16,6 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH>; 
     };
 
-    /* 行列変換 */
     default_transform: keymap_transform0 {
         compatible = "zmk,matrix-transform";
         rows = <4>;
@@ -31,38 +28,32 @@
         >;
     };
 
-    /* Split入力用ノード */
+    /* 送信用ノードをシンプルに記述 */
     split_inputs {
-        #address-cells = <1>;
-        #size-cells = <0>;
-        tb_right_split: tb_right_split@0 {
+        compatible = "zmk,split-inputs";
+        tb_right_split: tb_right_split {
             compatible = "zmk,input-split";
-            reg = <0>;
         };
     };
 
-    /* リスナー用ノード */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
 };
 
-/* 物理レイアウト定義 */
 / {
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
         transform = <&default_transform>;
         kscan = <&kscan0>;
-        /* keys = <...>; 定義は KobitoKey-layouts.dtsi に記述されています */
     };
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
 };
 
-/* NFCピンのGPIO化設定 */
 &uicr {
     nfct-pins-as-gpios;
 };
