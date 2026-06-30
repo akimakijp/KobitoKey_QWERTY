@@ -39,6 +39,8 @@
     pinctrl-0 = <&spi0_default_r>;
     pinctrl-1 = <&spi0_sleep_r>;
     pinctrl-names = "default", "sleep";
+    
+    /* 💡 CSピン(P0.09)は、kobitokey.dtsiの&uicr設定によりGPIOとして機能します */
     cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
 
     tb_right: trackball@0 {
@@ -54,9 +56,4 @@
         zephyr,axis-x = <INPUT_REL_X>;
         zephyr,axis-y = <INPUT_REL_Y>;
     };
-};
-
-&tb_right_split {
-    device = <&tb_right>;
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
