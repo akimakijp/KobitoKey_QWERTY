@@ -16,3 +16,7 @@
 };
 
 &xiao_serial { status = "disabled"; };
+
+/* 💡 最強の回避策：左側（セントラル）からは物理的にノードを削除する */
+/delete-node/ &tb_right_split;
+/delete-node/ &tb_right_listener;
