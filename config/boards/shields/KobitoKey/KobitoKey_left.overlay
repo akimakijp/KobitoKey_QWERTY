@@ -1,7 +1,4 @@
 #include "kobitokey.dtsi"
-#include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <input/processors.dtsi>
-#include <input/processors/sensor_rotation.dtsi>
 
 / {
     dummy_leds {
@@ -20,15 +17,29 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 最重要ポイント：
-   .dtsi で定義されている送信用ノードを、左側では明示的に無効化する。
-   これでコンパイラのチェック対象から完全に外れます。 */
-&tb_right_split {
-    status = "disabled";
+/* 💡 トラックボールの通信・処理はZMKのコアシステムに全自動で任せるため、
+   左側で手動設定していたものは全て無効化（または削除）します */
+&tb_right_split { status = "disabled"; };
+&tb_right_listener { status = "disabled"; };#include "kobitokey.dtsi"
+
+/ {
+    dummy_leds {
+        compatible = "gpio-leds";
+        led_red: led_0 { gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>; };
+        led_green: led_1 { gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>; };
+        led_blue: led_2 { gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>; };
+    };
+
+    aliases {
+        led-red = &led_red;
+        led-green = &led_green;
+        led-blue = &led_blue;
+    };
 };
 
-/* 💡 左側は受信用のリスナーだけを有効化する */
-&tb_right_listener {
-    status = "okay";
-    input-processors = <&zip_temp_layer 3 5000>;
-};
+&xiao_serial { status = "disabled"; };
+
+/* 💡 トラックボールの通信・処理はZMKのコアシステムに全自動で任せるため、
+   左側で手動設定していたものは全て無効化（または削除）します */
+&tb_right_split { status = "disabled"; };
+&tb_right_listener { status = "disabled"; };
