@@ -9,7 +9,6 @@
         led_green: led_1 { gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>; };
         led_blue: led_2 { gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>; };
     };
-
     aliases {
         led-red = &led_red;
         led-green = &led_green;
@@ -53,10 +52,8 @@
     };
 };
 
-/* 💡 正式なバインド記述 */
 &tb_right_split {
     status = "okay";
     device = <&tb_right>;
-    input-processors = 
-        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
