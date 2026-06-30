@@ -16,7 +16,7 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH>; 
     };
 
-    default_transform: keymap_transform0 {
+    default_transform: matrix_transform {
         compatible = "zmk,matrix-transform";
         rows = <4>;
         columns = <10>;
@@ -27,16 +27,19 @@
             RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)   RC(3,5) RC(3,6) RC(3,7) RC(3,8) RC(3,9)
         >;
     };
+};
 
-    /* 💡 ZMK標準の定義形式に統一 */
-    split_inputs: split_inputs {
+/* 💡 トラックボール用ノードをシンプルに定義 */
+/ {
+    split_inputs {
         compatible = "zmk,split-inputs";
-        tb_right_split: tb_right_split {
+        
+        tb_right_split: input_split_0 {
             compatible = "zmk,input-split";
         };
     };
 
-    tb_right_listener: tb_right_listener {
+    tb_right_listener: input_listener_0 {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
