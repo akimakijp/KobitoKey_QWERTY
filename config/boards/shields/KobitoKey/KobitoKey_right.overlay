@@ -3,7 +3,7 @@
 #include "kobitokey.dtsi"
 
 / {
-    /* 右側のみにトラックボール用ノードを定義 */
+    /* ここにトラックボール用ノードを定義することで競合を避ける */
     tb_right_split: tb_right_split {
         compatible = "zmk,input-split";
         status = "okay";
