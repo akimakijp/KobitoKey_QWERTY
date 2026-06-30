@@ -28,28 +28,23 @@
         >;
     };
 
-    /* 💡 ノード名を引用符で囲み、数値誤認を完全に排除 */
-    "split_inputs": split_inputs {
-        compatible = "zmk,split-inputs";
-        
-        tb_right_split: "tb_right_split" {
-            compatible = "zmk,input-split";
-        };
+    /* ZMKが最も安定して認識する「ネストなし・引用符なし」の定義 */
+    tb_right_split: input_split {
+        compatible = "zmk,input-split";
     };
 
-    tb_right_listener: "tb_right_listener" {
+    tb_right_listener: input_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
-};
 
-/ {
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
         transform = <&default_transform>;
         kscan = <&kscan0>;
     };
+    
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
