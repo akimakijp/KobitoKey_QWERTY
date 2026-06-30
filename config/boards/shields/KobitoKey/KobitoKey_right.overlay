@@ -45,18 +45,18 @@
         compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
-        
         motion-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         res-cpi = <600>;
         wakeup-source;
-
         zephyr,axis-x = <INPUT_REL_X>;
         zephyr,axis-y = <INPUT_REL_Y>;
     };
 };
 
-&tb_right_listener {
+/* 💡 正式なバインド記述 */
+&tb_right_split {
     status = "okay";
     device = <&tb_right>;
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+    input-processors = 
+        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
