@@ -29,25 +29,28 @@
     };
 };
 
-/* ノード定義をフラットにし、構文エラーを回避 */
+/* 分割入力の正しい定義 */
 / {
-    tb_right_split: input_split {
-        compatible = "zmk,input-split";
+    split_inputs: split_inputs {
+        compatible = "zmk,split-inputs";
+        
+        tb_right_split: tb_right_split {
+            compatible = "zmk,input-split";
+        };
     };
 
-    tb_right_listener: input_listener {
+    tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
-};
 
-/ {
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
         transform = <&default_transform>;
         kscan = <&kscan0>;
     };
+    
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
