@@ -30,6 +30,7 @@
         >;
     };
 
+    /* 送信側ノード（右側でこれを使用） */
     split_inputs {
         #address-cells = <1>;
         #size-cells = <0>;
@@ -39,21 +40,10 @@
         };
     };
 
+    /* 受信側リスナー（親機で有効化） */
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
-    };
-};
-
-/ {
-    physical_layout0: physical_layout_0 {
-        compatible = "zmk,physical-layout";
-        display-name = "Default Layout";
-        kscan = <&kscan0>;
-        transform = <&default_transform>;
-    };
-    chosen {
-        zmk,physical-layout = &physical_layout0;
     };
 };
 
