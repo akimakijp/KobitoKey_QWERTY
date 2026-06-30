@@ -28,12 +28,9 @@
         >;
     };
 
-    /* 送信用ノードをシンプルに記述 */
-    split_inputs {
-        compatible = "zmk,split-inputs";
-        tb_right_split: tb_right_split {
-            compatible = "zmk,input-split";
-        };
+    /* この記述が一番シンプルでエラーになりません */
+    tb_right_split: tb_right_split {
+        compatible = "zmk,input-split";
     };
 
     tb_right_listener: tb_right_listener {
