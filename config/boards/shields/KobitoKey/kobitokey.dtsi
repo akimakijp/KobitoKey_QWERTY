@@ -28,9 +28,12 @@
         >;
     };
 
-    /* この記述が一番シンプルでエラーになりません */
-    tb_right_split: tb_right_split {
-        compatible = "zmk,input-split";
+    /* 修正点：シンプルな階層構造に変更 */
+    split_inputs {
+        compatible = "zmk,split-inputs";
+        tb_right_split: input_split {
+            compatible = "zmk,input-split";
+        };
     };
 
     tb_right_listener: tb_right_listener {
