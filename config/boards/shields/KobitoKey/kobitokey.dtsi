@@ -1,7 +1,6 @@
 #include "KobitoKey-layouts.dtsi"
 
 / {
-    /* キーマトリックス定義 */
     kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
@@ -17,7 +16,6 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH>; 
     };
 
-    /* キーマップ変換定義 */
     default_transform: matrix_transform {
         compatible = "zmk,matrix-transform";
         rows = <4>;
@@ -30,18 +28,15 @@
         >;
     };
 
-    /* トラックボール用通信定義 (ラベルを明確に分離) */
     tb_right_split: input_split {
         compatible = "zmk,input-split";
     };
 
-    /* リスナー定義 (無効化) */
     tb_right_listener: input_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
 
-    /* レイアウト chosen 定義 */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
