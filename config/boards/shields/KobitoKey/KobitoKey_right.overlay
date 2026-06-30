@@ -38,7 +38,6 @@
     pinctrl-0 = <&spi0_default_r>;
     pinctrl-1 = <&spi0_sleep_r>;
     pinctrl-names = "default", "sleep";
-    
     cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
 
     tb_right: trackball@0 {
@@ -56,11 +55,8 @@
     };
 };
 
-/* 💡 右側ですべての処理（Y軸反転と、レイヤー3への切り替え）を完了させてから送信する */
-&tb_right_split {
+&tb_right_listener {
     status = "okay";
     device = <&tb_right>;
-    input-processors = 
-        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
-        <&zip_temp_layer 3 5000>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
