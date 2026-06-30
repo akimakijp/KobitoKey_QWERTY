@@ -9,7 +9,6 @@
         diode-direction = "col2row";
         wakeup-source;
 
-        /* Dピンは &xiao_d <番号> で指定（XIAOフォーマット） */
         row-gpios = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>, 
                     <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>, 
                     <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>, 
@@ -21,7 +20,6 @@
                     <&gpio0 10 GPIO_ACTIVE_HIGH> ; 
     };
 
-    /* 左右合体で 4行×10列（左0..4, 右5..9） */
     default_transform: keymap_transform0 {
         compatible = "zmk,matrix-transform";
         rows = <4>;
@@ -34,7 +32,6 @@
         >;
     };
 
-    /* 右側トラックボールを split 入力として扱う（ID=0） */
     split_inputs {
         #address-cells = <1>;
         #size-cells = <0>;
@@ -45,38 +42,25 @@
         };
     };
 
-    /* リスナー（中央で有効化。周辺から来た入力もここで処理） */
-    tb_left_listener: tb_left_listener {
-        compatible = "zmk,input-listener";
-        status = "disabled";
-    };
-
     tb_right_listener: tb_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
-        device = <&tb_right_split>;
-        
     };
 };
 
 / {
-    /* ★ 単体の物理レイアウト定義（Studio不要の最小形） */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
-
-        /* 既に定義済みの kscan と matrix transform を参照 */
         kscan = <&kscan0>;
         transform = <&default_transform>;
     };
 
-    /* ★ デフォルトで使うレイアウトを chosen で指す */
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
 };
 
-/* 💡 Zephyr 4.1.0以降でNFCピン（P0.09, P0.10）をGPIOとして使用するための必須設定 */
 &uicr {
     nfct-pins-as-gpios;
 };
