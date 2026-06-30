@@ -1,38 +1,12 @@
 #include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
-#include "kobitokey.dtsi"
 #include <input/processors.dtsi>
+#include "kobitokey.dtsi"
 
 / {
-    dummy_leds {
-        compatible = "gpio-leds";
-        led_red: led_0 { gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>; };
-        led_green: led_1 { gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>; };
-        led_blue: led_2 { gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>; };
-    };
-
-    aliases {
-        led-red = &led_red;
-        led-green = &led_green;
-        led-blue = &led_blue;
-    };
-};
-
-&default_transform { col-offset = <5>; };
-
-&pinctrl {
-    spi0_default_r: spi0_default_r { 
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
-        };
-    };
-    spi0_sleep_r: spi0_sleep_r { 
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
-        };
+    /* 右側のみにトラックボール用ノードを定義 */
+    tb_right_split: tb_right_split {
+        compatible = "zmk,input-split";
+        status = "okay";
     };
 };
 
@@ -58,7 +32,6 @@
 };
 
 &tb_right_split {
-    status = "okay";
     device = <&tb_right>;
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
