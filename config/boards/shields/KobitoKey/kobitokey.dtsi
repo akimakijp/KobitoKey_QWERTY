@@ -28,14 +28,10 @@
         >;
     };
 
-    /* 💡 ノード定義を簡素化 */
-    split_inputs {
+    /* 💡 ZMK標準の定義形式に統一 */
+    split_inputs: split_inputs {
         compatible = "zmk,split-inputs";
-    };
-
-    /* 💡 外部から参照できるようにラベルだけを定義 */
-    tb_right_split: &split_inputs {
-        tb_right_split {
+        tb_right_split: tb_right_split {
             compatible = "zmk,input-split";
         };
     };
