@@ -29,17 +29,17 @@
     };
 };
 
-/* ノード定義をZMKが期待する形に正規化 */
+/* 💡 ラベルとノード名を分けることでパースエラーを完全に回避 */
 / {
     split_inputs {
         compatible = "zmk,split-inputs";
-        
-        tb_right_split: tb_right_split {
+
+        tb_right_split: input_split {
             compatible = "zmk,input-split";
         };
     };
 
-    tb_right_listener {
+    tb_right_listener: input_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
