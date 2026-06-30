@@ -29,15 +29,13 @@
     };
 };
 
-/* 💡 最も安全なノード定義形式 */
+/* ノード定義をフラットにし、構文エラーを完全回避 */
 / {
-    split_inputs {
-        tb_right_split: tb_right_split {
-            compatible = "zmk,input-split";
-        };
+    tb_right_split: input_split {
+        compatible = "zmk,input-split";
     };
 
-    tb_right_listener: tb_right_listener {
+    tb_right_listener: input_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
