@@ -20,32 +20,11 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 ZMKが検知している2つのSplit入力ノードを明示的に定義し、
-   両方に必須の `device` プロパティを付与してASSERTを回避します。 */
-/ {
-    split_inputs {
-        compatible = "zmk,split-inputs";
-        
-        tb_right: tb_right@0 {
-            compatible = "zmk,input-split";
-            reg = <0>;
-            /* 💡 エラーログが求めている 'device' プロパティを付与 */
-            device = <&tb_right>; 
-        };
+/* 💡 左側（セントラル）はデータを受け取るだけなので、
+   リスナー（受信機）のみを有効化します。
+   ※ 送信用ノード（tb_right_split）は絶対に記述しません！ */
 
-        tb_unused: tb_unused@1 {
-            compatible = "zmk,input-split";
-            reg = <1>;
-            /* 💡 2つ目のノードにも 'device' を付与してエラーを完全に封じ込める */
-            device = <&tb_unused>;
-            status = "disabled";
-        };
-    };
-};
-
-/* 💡 リスナーの設定（ZMK最新版では 'device' を使用します） */
 &tb_right_listener {
     status = "okay";
-    device = <&tb_right>;
     input-processors = <&zip_temp_layer 3 5000>;
 };
