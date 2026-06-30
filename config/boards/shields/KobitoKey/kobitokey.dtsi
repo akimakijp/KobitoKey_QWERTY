@@ -28,12 +28,12 @@
         >;
     };
 
-    /* ZMKが最も安全にパースできるフラットな定義形式 */
-    tb_right_split: tb_right_split {
+    /* 💡 ZMKのビルドシステムが最も確実に解釈するフラットな記述 */
+    tb_right_split {
         compatible = "zmk,input-split";
     };
 
-    tb_right_listener: tb_right_listener {
+    tb_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
