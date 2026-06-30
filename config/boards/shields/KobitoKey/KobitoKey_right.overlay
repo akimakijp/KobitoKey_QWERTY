@@ -2,14 +2,6 @@
 #include <input/processors.dtsi>
 #include "kobitokey.dtsi"
 
-/ {
-    /* 英数字のみのノード名を使用 */
-    tb_split: tbsplit {
-        compatible = "zmk,input-split";
-        status = "okay";
-    };
-};
-
 &spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
@@ -18,7 +10,7 @@
     pinctrl-names = "default", "sleep";
     cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
 
-    tb_right: trackball@0 {
+    trackball: trackball@0 {
         status = "okay";
         compatible = "pixart,pmw3610";
         reg = <0>;
@@ -31,7 +23,11 @@
     };
 };
 
-&tb_split {
-    device = <&tb_right>;
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+/* トラックボールの入力を直接リスナーとして登録 */
+/ {
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+    };
 };
