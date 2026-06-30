@@ -20,10 +20,15 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* * 💡 左側（セントラル）には、zmk,input-split や
- * tb_right_listener などのトラックボールに関する
- * デバイスツリー定義を一切記述しません。
- * * 最新のZMKでは、右側（ペリフェラル）から送られてくる
- * マウス/トラックボールのイベントは、セントラル側で
- * 自動的にマージされてOSに送信される仕様になっています。
- */
+/* 💡 最重要ポイント：
+   .dtsi で定義されている送信用ノードを、左側では明示的に無効化する。
+   これでコンパイラのチェック対象から完全に外れます。 */
+&tb_right_split {
+    status = "disabled";
+};
+
+/* 💡 左側は受信用のリスナーだけを有効化する */
+&tb_right_listener {
+    status = "okay";
+    input-processors = <&zip_temp_layer 3 5000>;
+};
