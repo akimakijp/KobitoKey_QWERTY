@@ -20,11 +20,10 @@
 
 &xiao_serial { status = "disabled"; };
 
-/* 💡 左側（セントラル）はデータを受け取るだけなので、
-   リスナー（受信機）のみを有効化します。
-   ※ 送信用ノード（tb_right_split）は絶対に記述しません！ */
-
-&tb_right_listener {
-    status = "okay";
-    input-processors = <&zip_temp_layer 3 5000>;
-};
+/* * 💡 左側（セントラル）には、zmk,input-split や
+ * tb_right_listener などのトラックボールに関する
+ * デバイスツリー定義を一切記述しません。
+ * * 最新のZMKでは、右側（ペリフェラル）から送られてくる
+ * マウス/トラックボールのイベントは、セントラル側で
+ * 自動的にマージされてOSに送信される仕様になっています。
+ */
