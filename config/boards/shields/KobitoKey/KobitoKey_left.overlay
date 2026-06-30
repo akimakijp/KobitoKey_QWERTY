@@ -1,20 +1,3 @@
 #include "kobitokey.dtsi"
 
-/ {
-    dummy_leds {
-        compatible = "gpio-leds";
-        led_red: led_0 { gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>; };
-        led_green: led_1 { gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>; };
-        led_blue: led_2 { gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>; };
-    };
-    aliases {
-        led-red = &led_red;
-        led-green = &led_green;
-        led-blue = &led_blue;
-    };
-};
-
 &xiao_serial { status = "disabled"; };
-
-/delete-node/ &tb_right_split;
-/delete-node/ &tb_right_listener;
