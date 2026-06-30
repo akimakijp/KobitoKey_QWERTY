@@ -28,10 +28,14 @@
         >;
     };
 
-    /* 修正点：シンプルな階層構造に変更 */
+    /* 💡 ノード定義を簡素化 */
     split_inputs {
         compatible = "zmk,split-inputs";
-        tb_right_split: input_split {
+    };
+
+    /* 💡 外部から参照できるようにラベルだけを定義 */
+    tb_right_split: &split_inputs {
+        tb_right_split {
             compatible = "zmk,input-split";
         };
     };
