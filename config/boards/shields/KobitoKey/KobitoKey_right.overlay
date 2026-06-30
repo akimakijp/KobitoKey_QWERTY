@@ -3,10 +3,8 @@
 #include "kobitokey.dtsi"
 
 / {
-    /* * 修正点: ラベル名をノード名と明確に分け、
-     * ノード名にアンダースコアを先行させて識別子であることを強制します 
-     */
-    tb_right_split: _input_split {
+    /* 英数字のみのノード名を使用 */
+    tb_split: tbsplit {
         compatible = "zmk,input-split";
         status = "okay";
     };
@@ -33,8 +31,7 @@
     };
 };
 
-/* 修正点: 上記で定義したラベルを正しく参照 */
-&tb_right_split {
+&tb_split {
     device = <&tb_right>;
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 };
