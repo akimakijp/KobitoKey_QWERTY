@@ -29,17 +29,13 @@
     };
 };
 
-/* 💡 トラックボール用ノードをシンプルに定義 */
+/* ノード定義をフラットにし、構文エラーを回避 */
 / {
-    split_inputs {
-        compatible = "zmk,split-inputs";
-        
-        tb_right_split: input_split_0 {
-            compatible = "zmk,input-split";
-        };
+    tb_right_split: input_split {
+        compatible = "zmk,input-split";
     };
 
-    tb_right_listener: input_listener_0 {
+    tb_right_listener: input_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
