@@ -29,11 +29,9 @@
     };
 };
 
-/* 分割入力の正しい定義 */
+/* 💡 最も安全なノード定義形式 */
 / {
-    split_inputs: split_inputs {
-        compatible = "zmk,split-inputs";
-        
+    split_inputs {
         tb_right_split: tb_right_split {
             compatible = "zmk,input-split";
         };
@@ -50,7 +48,6 @@
         transform = <&default_transform>;
         kscan = <&kscan0>;
     };
-    
     chosen {
         zmk,physical-layout = &physical_layout0;
     };
