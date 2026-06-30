@@ -29,11 +29,9 @@
     };
 };
 
-/* * 💡 トラックボール関連を分離して定義 
- * ノード名に特殊記号や引用符を一切使わないことで、パーサーの誤認を防ぎます
- */
+/* ノード定義をZMKが期待する形に正規化 */
 / {
-    input_split_node {
+    split_inputs {
         compatible = "zmk,split-inputs";
         
         tb_right_split: tb_right_split {
@@ -41,7 +39,7 @@
         };
     };
 
-    tb_right_listener: input_listener {
+    tb_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
