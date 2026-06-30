@@ -57,3 +57,11 @@
         zephyr,axis-y = <INPUT_REL_Y>;
     };
 };
+
+/* 💡 【重要】右側（送る側）には、input-splitノードに必ず `device` プロパティが必要です。
+   これでビルド時の ASSERT エラーを回避し、かつ正常にデータが送信されます。 */
+&tb_right_split {
+    status = "okay";
+    device = <&tb_right>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+};
