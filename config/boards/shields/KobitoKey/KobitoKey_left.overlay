@@ -16,5 +16,3 @@
 };
 
 &xiao_serial { status = "disabled"; };
-&tb_right_split { status = "disabled"; };
-&tb_right_listener { status = "disabled"; };
